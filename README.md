@@ -1,349 +1,310 @@
-# EnglishAI - AI 驱动的英语学习平台
+# EnglishAI - 科学高效的英语词汇学习系统
 
-一个全栈的、AI 驱动的现代化英语学习 Web 应用。
-
-[![GitHub stars](https://img.shields.io/github/stars/heyingfer09072002/Learn-English-AI)](https://github.com/heyingfer09072002/Learn-English-AI)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/heyingfer09072002/Learn-English-AI)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Vue 3](https://img.shields.io/badge/Vue-3.x-green.svg)](https://vuejs.org/)
-[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
-[![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL-blue.svg)](https://www.postgresql.org/)
+[![Node.js](https://img.shields.io/badge/Node-16.x-green.svg)](https://nodejs.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15.x-blue.svg)](https://www.postgresql.org/)
 
-> **实时预览**: https://5173-fc9e37e7cc8f52b5.monkeycode-ai.online
+> 🎯 **EnglishAI** 是一款基于艾宾浩斯记忆曲线的科学词汇学习系统，提供 4 种高效学习模式，帮助您快速掌握 CET-4/CET-6 核心词汇。
 
-## 🌟 特性
+## ✨ 核心特性
 
-- 🎯 **智能分析**: AI 深度分析词汇量和语法掌握度，生成个性化学习报告
-- ✍️ **写作评估**: 实时评估英语写作，提供语法、用词和表达的专业建议
-- 💬 **AI 对话**: 与 AI 进行自然对话练习，沉浸式提升口语和听力
-- 📊 **进度追踪**: 可视化学习进度和成长轨迹，见证每一步提升
-- 🎨 **现代 UI**: 深色科技感设计，Glassmorphism 效果，响应式布局
-- 📚 **8 大主题课程**: 120 个精选句子，648 个单词解析，科学系统化学习
+### 🎓 科学学习方法
+- **艾宾浩斯记忆曲线**：智能安排复习时间点，最大化记忆效果
+- **4 种学习模式**：卡片背诵、拼写练习、选择题测试、听力辨音
+- **个性化进度追踪**：实时记录学习数据，可视化成长轨迹
 
-## 📁 项目结构
+### 📚 丰富词汇资源
+- **CET-4 官方词库**：228 条高频核心词汇
+- **CET-6 核心词库**：6000+ 条六级必备词汇
+- **多维度分类**：按词频、词性、主题、考试类型、难度分级
 
-```
-Learn-English-AI/
-├── frontend/                    # Vue 3 前端应用
-│   ├── src/
-│   │   ├── api/                # API 客户端 (Axios)
-│   │   ├── assets/             # 静态资源
-│   │   ├── components/         # 组件
-│   │   │   ├── layout/         # 布局组件
-│   │   │   └── learning/       # 学习组件
-│   │   ├── pages/              # 页面组件
-│   │   │   ├── Home.vue        # 首页
-│   │   │   ├── Learning.vue    # 学习中心
-│   │   │   ├── Chat.vue        # AI 对话
-│   │   │   ├── Lesson.vue      # 课程学习
-│   │   │   ├── Writing.vue     # 写作评估
-│   │   │   ├── Progress.vue    # 进度追踪
-│   │   │   └── Profile.vue     # 个人中心 ✨
-│   │   ├── router/             # 路由配置
-│   │   ├── lib/                # 工具函数
-│   │   └── main.ts             # 入口文件
-│   ├── .env                    # 环境变量
-│   ├── package.json
-│   └── README.md
-├── backend/                     # Node.js 后端服务
-│   ├── src/
-│   │   ├── controllers/        # 控制器
-│   │   │   ├── auth.controller.ts
-│   │   │   ├── user.controller.ts
-│   │   │   ├── lesson.controller.ts
-│   │   │   └── ai.controller.ts
-│   │   ├── database/           # PostgreSQL 配置 ✨
-│   │   │   └── index.ts
-│   │   ├── middleware/         # 中间件 (JWT 认证)
-│   │   ├── models/             # 数据模型
-│   │   │   ├── User.model.ts
-│   │   │   ├── Lesson.model.ts
-│   │   │   └── Progress.model.ts
-│   │   ├── routes/             # 路由定义
-│   │   ├── schemas/            # Zod 验证模式
-│   │   ├── migrate.ts          # 数据库迁移脚本 ✨
-│   │   ├── seed-courses.ts     # 课程数据导入 ✨
-│   │   └── index.ts            # 入口文件
-│   ├── .env                    # 环境变量
-│   ├── .env.example
-│   ├── docker-compose.yml      # Docker 配置
-│   ├── package.json
-│   ├── API_TEST.md             # API 测试文档
-│   └── README.md
-├── .project-docs/              # 项目文档
-│   └── PROJECT.md              # 项目总览
-└── README.md
-```
+### 🎨 精美界面设计
+- **深色主题 UI**：沉浸式学习体验，护眼舒适
+- **玻璃态组件**：现代化设计风格，美观大方
+- **可视化图表**：记忆曲线、学习趋势、进度统计
 
 ## 🚀 快速开始
 
-### 环境要求
-
-- Node.js 18+
-- PostgreSQL 15+ (或使用 Docker)
-- npm 或 pnpm
-- Git
-
 ### 1. 克隆项目
-
 ```bash
 git clone https://github.com/heyingfer09072002/Learn-English-AI.git
 cd Learn-English-AI
 ```
 
-### 2. 启动数据库
-
-**方式 A: 使用 PostgreSQL 本地服务**
-
+### 2. 安装依赖
 ```bash
-# 安装 PostgreSQL (Ubuntu/Debian)
-sudo apt-get install postgresql postgresql-contrib
+# 后端依赖
+cd backend
+npm install
 
-# 启动服务
-sudo service postgresql start
-
-# 创建数据库和用户
-sudo -u postgres psql -c "CREATE USER english_ai WITH PASSWORD 'english_ai_pass';"
-sudo -u postgres psql -c "CREATE DATABASE english_ai OWNER english_ai;"
-sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE english_ai TO english_ai;"
+# 前端依赖
+cd ../frontend
+npm install
 ```
 
-**方式 B: 使用 Docker (推荐)**
-
+### 3. 启动数据库
 ```bash
+# 使用 Docker（推荐）
 cd backend
 docker-compose up -d
+
+# 或使用本地 PostgreSQL
+sudo service postgresql start
 ```
 
-### 3. 后端配置
-
+### 4. 配置环境变量
 ```bash
-# 进入后端目录
+# 后端 .env
+cp backend/.env.example backend/.env
+# 编辑 .env 文件配置数据库和 JWT 密钥
+
+# 前端 .env
+echo "VITE_API_BASE_URL=http://localhost:3001/api" > frontend/.env
+```
+
+### 5. 数据迁移
+```bash
 cd backend
-
-# 安装依赖
-npm install
-
-# 配置环境变量
-cp .env.example .env
-# 编辑 .env 中的数据库配置
-
-# 运行数据库迁移
 npm run migrate
-
-# 导入课程数据 (可选)
-npm run seed
-
-# 启动开发服务器 (http://localhost:3001)
-npm run dev
+npm run import:vocabulary data/cet4-official-flat.json
 ```
 
-### 4. 前端配置
-
+### 6. 启动服务
 ```bash
-# 打开新终端，进入前端目录
+# 后端服务（端口 3001）
+cd backend
+npm run dev
+
+# 前端服务（端口 5173）
 cd frontend
-
-# 安装依赖
-npm install
-
-# 启动开发服务器 (http://localhost:5173)
 npm run dev
 ```
 
-访问 http://localhost:5173 开始使用！
+### 7. 访问系统
+- **前端页面**: http://localhost:5173
+- **API 服务**: http://localhost:3001
+- **登录页面**: http://localhost:5173/login
+
+## 📋 功能模块
+
+### 用户系统
+- ✅ 用户注册/登录
+- ✅ JWT Token 认证
+- ✅ 个人中心管理
+- ✅ 学习历史记录
+
+### 词汇学习
+- ✅ 词汇组选择（10 种分类）
+- ✅ 4 种学习模式
+- ✅ 学习进度追踪
+- ✅ 艾宾浩斯复习提醒
+
+### 学习模式
+
+#### 1️⃣ 卡片背诵模式
+- 3D 翻转动画
+- 显示音标、词性、释义、例句
+- 认识/不认识标记
+- 键盘快捷键操作
+
+#### 2️⃣ 拼写练习模式
+- 看中文写英文
+- 首字母提示
+- 准确率统计
+- 即时答案反馈
+
+#### 3️⃣ 选择题测试模式
+- 4 选项随机排序
+- 答案解析展示
+- 正确率统计
+- 智能干扰项生成
+
+#### 4️⃣ 听力辨音模式
+- 音频播放
+- 听音拼写
+- 2 次提示机会
+- 听力准确率
+
+### 可视化图表
+- ✅ 艾宾浩斯记忆曲线
+- ✅ 本周学习趋势图
+- ✅ 学习进度条
+- ✅ 统计数据面板
+
+## 📊 词库数据
+
+| 词库类型 | 词汇数量 | 状态 |
+|---------|---------|------|
+| CET-4 官方 | 228 | ✅ 已导入 |
+| CET-6 核心 | 6005 | ✅ 已导入 |
+| 总计 | 6233 | ✅ |
+
+### 词汇信息
+每条词汇包含：
+- 📝 单词拼写
+- 🔊 英式/美式音标
+- 📖 词性（v./n./adj./adv.）
+- 🌐 中英文释义
+- 💡 记忆技巧
+- 📚 例句及翻译
+- 🔗 同义词/反义词
+- 🏷️ 多维度分类标签
 
 ## 🛠️ 技术栈
 
 ### 前端
-| 技术 | 版本 | 用途 |
-|------|------|------|
-| Vue 3 | 3.x | 核心框架 |
-| TypeScript | 5.x | 类型系统 |
-| Vite | 5.x | 构建工具 |
-| Vue Router | 4.x | 路由管理 |
-| Axios | 1.x | HTTP 客户端 |
-| Tailwind CSS | 3.x | 样式框架 |
-| shadcn/ui | latest | UI 组件库 |
+- [Vue 3](https://vuejs.org/) - 渐进式 JavaScript 框架
+- [TypeScript](https://www.typescriptlang.org/) - 类型安全的 JavaScript
+- [Tailwind CSS](https://tailwindcss.com/) - 实用优先的 CSS 框架
+- [Vue Router](https://router.vuejs.org/) - 官方路由管理器
+- [Vite](https://vitejs.dev/) - 下一代前端构建工具
 
 ### 后端
-| 技术 | 版本 | 用途 |
-|------|------|------|
-| Node.js | 18+ | 运行时 |
-| Express | 4.x | Web 框架 |
-| TypeScript | 5.x | 类型系统 |
-| PostgreSQL | 15+ | 数据库 |
-| node-postgres | 8.x | 数据库驱动 |
-| JWT | 9.x | 身份认证 |
-| bcryptjs | 2.x | 密码加密 |
-| Zod | 3.x | 参数验证 |
-| OpenAI SDK | 4.x | AI 集成 |
+- [Node.js](https://nodejs.org/) - JavaScript 运行时
+- [TypeScript](https://www.typescriptlang.org/) - 类型系统
+- [Express](https://expressjs.com/) - Web 应用框架
+- [PostgreSQL](https://www.postgresql.org/) - 关系型数据库
+- [JWT](https://jwt.io/) - JSON Web Token 认证
+- [bcrypt](https://www.npmjs.com/package/bcryptjs) - 密码加密
 
-## 📋 API 接口
+### 开发工具
+- [Vitest](https://vitest.dev/) - 单元测试框架
+- [tsx](https://www.npmjs.com/package/tsx) - TypeScript 执行器
+- [ESLint](https://eslint.org/) - 代码检查
+- [Prettier](https://prettier.io/) - 代码格式化
+
+## 📁 项目结构
+
+```
+Learn-English-AI/
+├── backend/                    # 后端服务
+│   ├── src/
+│   │   ├── controllers/       # 控制器层
+│   │   ├── models/           # 数据模型
+│   │   ├── routes/           # 路由定义
+│   │   ├── middleware/       # 中间件
+│   │   ├── utils/            # 工具函数
+│   │   ├── database/         # 数据库配置
+│   │   └── index.ts          # 入口文件
+│   ├── data/                 # 词汇数据
+│   ├── scripts/              # 脚本文件
+│   ├── tests/                # 测试文件
+│   └── package.json
+├── frontend/                  # 前端应用
+│   ├── src/
+│   │   ├── pages/           # 页面组件
+│   │   ├── components/      # 通用组件
+│   │   ├── api/             # API 客户端
+│   │   ├── router/          # 路由配置
+│   │   └── main.ts          # 入口文件
+│   └── package.json
+├── .monkeycode/              # 项目文档
+├── PROJECT_COMPLETE.md       # 完成报告
+├── QUICK_START.md           # 快速指南
+├── TESTING_CHECKLIST.md     # 测试清单
+├── UPDATE_SUMMARY.md        # 更新总结
+└── README.md                # 项目说明
+```
+
+## 🔌 API 接口
 
 ### 认证接口
-- `POST /api/auth/register` - 用户注册
-- `POST /api/auth/login` - 用户登录
-- `POST /api/auth/refresh` - 刷新令牌
-- `POST /api/auth/logout` - 用户登出
-
-### 用户接口
-- `GET /api/users/profile` - 获取用户信息
-- `PUT /api/users/profile` - 更新用户信息
-- `GET /api/users/progress` - 获取学习进度
-- `GET /api/users/statistics` - 获取学习统计
-
-### 课程接口
-- `GET /api/lessons` - 获取课程列表
-- `GET /api/lessons/:id` - 获取课程详情
-- `GET /api/lessons/:id/sentences` - 获取句子列表
-- `POST /api/lessons/:id/progress` - 更新学习进度
-
-### AI 接口
-- `POST /api/ai/chat` - AI 对话
-- `POST /api/ai/writing-assessment` - 写作评估
-- `POST /api/ai/sentence-analysis` - 句子分析
-- `POST /api/ai/speaking-evaluation` - 口语评估
-
-详细测试文档请查看 [backend/API_TEST.md](backend/API_TEST.md)
-
-## 📚 课程内容
-
-### 8 大主题课程
-
-| 课程 | 等级 | 课时 | 内容 |
-|------|------|------|------|
-| 💬 日常对话 | 初级 | 16 | 问候、自我介绍、日常交流 |
-| ✈️ 旅行英语 | 初级 | 14 | 机场、酒店、问路、观光 |
-| 💼 商务沟通 | 中级 | 11 | 会议、演示、邮件、谈判 |
-| 🎓 学术英语 | 高级 | 12 | 讲座、研究、论文、讨论 |
-| 🌍 文化生活 | 中级 | 13 | 文化、传统、节日、习俗 |
-| 🤖 科技前沿 | 高级 | 17 | 科技、AI、编程、创新 |
-| 🏥 健康医疗 | 中级 | 15 | 健康、就医、症状、治疗 |
-| 🎮 娱乐休闲 | 初级 | 17 | 电影、音乐、游戏、运动 |
-
-### 数据结构
-
-- **8 个课程** - 覆盖多场景英语学习需求
-- **120 个句子** - 每个课程 15 个精选句子
-- **648 个单词解析** - 包含音标、词性、含义、例句
-
-## 🎯 功能展示
-
-### 个人中心 ✨
-- 用户信息管理
-- 学习统计数据（学习天数、完成课程、掌握词汇、总时长）
-- 学习进度可视化
-- 成就系统
-
-### 首页
-- 8 大课程展示
-- 功能卡片导航
-- 数据展示
-
-### 学习中心
-- 词汇能力评估
-- 语法能力评估
-- 课程列表
-
-### 课程学习
-- 句子展示（英文 + 中文）
-- 单词解析（音标、词性、含义）
-- 音频播放控制
-- 键盘快捷键（空格/左右箭头）
-
-## 📝 环境变量
-
-### 后端 (.env)
-```env
-NODE_ENV=development
-PORT=3001
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=english_ai
-DB_USER=english_ai
-DB_PASSWORD=english_ai_pass
-JWT_SECRET=your-super-secret-jwt-key
-OPENAI_API_KEY=sk-your-openai-api-key-here
-FRONTEND_URL=http://localhost:5173
-```
-
-### 前端 (.env)
-```env
-VITE_API_URL=http://localhost:3001/api
-```
-
-## 🔧 开发命令
-
-### 后端
 ```bash
-npm run dev          # 启动开发服务器
-npm run build        # 构建生产版本
-npm run start        # 启动生产服务器
-npm run migrate      # 运行数据库迁移
-npm run seed         # 导入课程数据
-npm run db:reset     # 重置数据库
-npm run lint         # 代码检查
-npm test             # 运行测试
+POST /api/auth/register    # 用户注册
+POST /api/auth/login       # 用户登录
+GET  /api/users/profile    # 获取用户信息
 ```
 
-### 前端
+### 词汇接口
 ```bash
-npm run dev          # 启动开发服务器
-npm run build        # 构建生产版本
-npm run preview      # 预览生产版本
+GET /api/vocabulary/groups         # 词汇分组列表
+GET /api/vocabulary/groups/:id/words  # 获取分组词汇
+GET /api/vocabulary/words/:id      # 词汇详情
+GET /api/vocabulary/words/search?q=query  # 搜索词汇
 ```
 
-## 📊 开发进度
+### 学习接口
+```bash
+POST /api/vocabulary/words/:id/learn  # 记录学习
+POST /api/vocabulary/words/:id/review # 记录复习
+GET  /api/vocabulary/progress        # 学习进度
+GET  /api/vocabulary/review/due      # 待复习
+GET  /api/vocabulary/statistics      # 学习统计
+```
 
-### 已完成 ✅
-- ✅ 项目基础架构（前后端分离）
-- ✅ PostgreSQL 数据库设计和集成
-- ✅ JWT 认证系统
-- ✅ RESTful API 接口
-- ✅ 8 大主题课程数据
-- ✅ 前端 7 个页面（Home/Learning/Chat/Lesson/Writing/Progress/Profile）
-- ✅ 组件化架构
-- ✅ 键盘快捷键支持
-- ✅ Docker 数据库配置
-- ✅ 数据库迁移和种子脚本
-- ✅ API 测试文档
+## 🧪 测试
 
-### 进行中 🚧
-- 🚧 前后端 API 完整对接
-- 🚧 用户登录/注册功能
-- 🚧 完整的错误处理
-- 🚧 单元测试
+```bash
+# 运行后端测试
+cd backend
+npm run test:run
 
-### 计划中 📋
-- 📋 WebSocket 实时对话
-- 📋 语音识别集成
-- 📋 学习数据分析图表
-- 📋 移动端适配
-- 📋 PWA 支持
-- 📋 多语言支持
+# 查看测试覆盖率
+npm run test:coverage
 
-## 🔗 链接
+# 快速 API 测试
+./test-api.sh
+```
 
-- **在线预览**: https://5173-fc9e37e7cc8f52b5.monkeycode-ai.online
-- **GitHub**: https://github.com/heyingfer09072002/Learn-English-AI
-- **项目文档**: .project-docs/PROJECT.md
+## 📈 学习数据
 
-## 📄 许可证
+### 记忆曲线时间点
+| 时间点 | 记忆保留率 | 建议行动 |
+|-------|-----------|---------|
+| 学习时 | 100% | 初次学习 |
+| 1 天后 | 65% | 第一次复习 |
+| 4 天后 | 35% | 第二次复习 |
+| 7 天后 | 25% | 第三次复习 |
+| 15 天后 | 21% | 第四次复习 |
 
-MIT License
+> 💡 **提示**：及时复习可将记忆保留率提升至 **90% 以上**
 
-## 👥 贡献
+## 🌟 功能路线图
 
-欢迎贡献代码！
+- [x] 用户认证系统
+- [x] 词汇学习功能
+- [x] 4 种学习模式
+- [x] 可视化图表
+- [x] CET-4/CET-6 词库
+- [ ] AI 对话练习
+- [ ] 写作评估
+- [ ] 打字练习模式
+- [ ] 成就系统
+- [ ] 社交功能
+- [ ] 移动端适配
 
-1. Fork 项目
+## 🤝 贡献指南
+
+欢迎提交 Issue 和 Pull Request！
+
+1. Fork 本项目
 2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
 3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
 4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 提交 Pull Request
+5. 开启 Pull Request
+
+## 📄 开源协议
+
+MIT License
+
+## 👏 致谢
+
+- [qwerty-learner](https://github.com/RealKai42/qwerty-learner) - 灵感来源
+- 词库数据来源于 CET-4/CET-6 官方大纲
+
+## 📞 联系方式
+
+- 项目地址：https://github.com/heyingfer09072002/Learn-English-AI
+- 问题反馈：请在 GitHub 提交 Issue
 
 ---
 
-**EnglishAI** - 让英语学习从未如此简单 🚀
+<div align="center">
 
-**最后更新**: 2026-05-24
+**如果您觉得这个项目有帮助，请给一个 ⭐️ Star 支持！**
+
+Made with ❤️ by EnglishAI Team
+
+</div>
