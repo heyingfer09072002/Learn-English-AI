@@ -1,50 +1,42 @@
 # EnglishAI - AI 驱动的英语学习平台
 
-一个现代化的、AI 驱动的英语学习 Web 应用，帮助用户高效提升英语能力。
+一个全栈的、AI 驱动的现代化英语学习 Web 应用。
 
-## 项目结构
+## 🌟 特性
+
+- 🎯 **智能分析**: AI 深度分析词汇量和语法掌握度
+- ✍️ **写作评估**: 实时评估英语写作，提供专业建议
+- 💬 **AI 对话**: 与 AI 进行自然对话练习
+- 📊 **进度追踪**: 可视化学习进度和成长轨迹
+- 🎨 **现代 UI**: 深色科技感设计，响应式布局
+
+## 📁 项目结构
 
 ```
 Learn-English-AI/
-├── frontend/          # 前端代码（Vue 3 + TypeScript）
-├── backend/           # 后端代码（待开发）
-└── README.md          # 项目说明文档
+├── frontend/          # 前端代码 (Vue 3 + TypeScript)
+│   ├── src/
+│   │   ├── pages/    # 页面组件
+│   │   ├── components/
+│   │   │   ├── layout/    # 布局组件
+│   │   │   └── learning/  # 学习组件
+│   │   ├── router/   # 路由配置
+│   │   └── ...
+│   ├── package.json
+│   └── README.md
+├── backend/           # 后端代码 (Node.js + Express)
+│   ├── src/
+│   │   ├── controllers/  # 控制器
+│   │   ├── routes/       # 路由
+│   │   ├── middleware/   # 中间件
+│   │   ├── config/       # 配置
+│   │   └── index.ts      # 入口
+│   ├── package.json
+│   └── README.md
+└── README.md          # 本文件
 ```
 
-## 技术栈
-
-### 前端 (frontend/)
-- **框架**: Vue 3 + TypeScript
-- **构建工具**: Vite
-- **UI 组件库**: shadcn/ui + Tailwind CSS
-- **路由**: Vue Router
-- **图标**: Lucide Icons
-- **状态管理**: Vue Composition API
-
-### 后端 (backend/)
-- *待开发*
-
-## 功能特性
-
-### ✅ 已实现
-- **首页**: 展示平台核心功能和统计数据
-- **学习中心**: 课程列表、学习进度追踪、能力评估入口
-- **课程学习页面**: 
-  - 句子展示（英文、中文、音标、分词）
-  - 单词拆解（词性、释义、例句、句子角色）
-  - 音频播放控制（播放/暂停、慢速模式）
-  - 键盘快捷键支持（空格播放、S 慢速、A 答案、左右切换）
-  - 学习进度条
-- **AI 对话页面**: 对话练习界面
-- **响应式设计**: 适配 PC 和平板
-
-### 🚧 开发中
-- 写作评估功能
-- 进度追踪详情
-- 词汇/语法能力评估测试
-- AI 能力接入
-
-## 快速开始
+## 🚀 快速开始
 
 ### 前端开发
 
@@ -55,82 +47,130 @@ cd frontend
 # 安装依赖
 npm install
 
-# 启动开发服务器
+# 启动开发服务器 (http://localhost:5173)
 npm run dev
 
 # 构建生产版本
 npm run build
-
-# 预览生产构建
-npm run preview
 ```
 
-### 访问地址
-- 开发服务器：http://localhost:5173
-- 在线预览：https://5173-fc9e37e7cc8f52b5.monkeycode-ai.online
+### 后端开发
 
-## 页面路由
+```bash
+# 进入后端目录
+cd backend
 
-| 路由 | 页面 | 说明 |
-|------|------|------|
-| `/` | Home | 首页 |
-| `/learning` | Learning | 学习中心 |
-| `/chat` | Chat | AI 对话 |
-| `/lesson` | Lesson | 课程学习 |
-| `/writing` | Writing | 写作评估 |
-| `/progress` | Progress | 进度追踪 |
+# 安装依赖
+npm install
 
-## 设计特点
+# 配置环境变量
+cp .env.example .env
+# 编辑 .env 文件
 
-- **深色科技风**: 深蓝紫色背景 (#0a0e27)
-- **渐变色彩**: 蓝 - 紫 - 青渐变主题
-- **玻璃拟态**: 半透明组件 + backdrop-blur
-- **动态背景**: 光晕动画效果
-- **流畅交互**: Hover 动画、过渡效果
+# 启动开发服务器 (http://localhost:3001)
+npm run dev
 
-## 开发规范
-
-### 目录结构
-```
-frontend/
-├── src/
-│   ├── assets/        # 静态资源
-│   ├── components/    # 通用组件
-│   │   ├── layout/    # 布局组件
-│   │   └── learning/  # 学习相关组件
-│   ├── pages/         # 页面组件
-│   ├── router/        # 路由配置
-│   ├── lib/           # 工具函数
-│   ├── App.vue        # 根组件
-│   └── main.ts        # 入口文件
-├── public/            # 公共资源
-└── package.json       # 依赖配置
+# 构建生产版本
+npm run build
 ```
 
-### 组件命名
-- 使用 PascalCase 命名（如 `Navbar.vue`, `SentenceDisplay.vue`）
-- 组件文件名与导出名称一致
+## 🛠️ 技术栈
 
-### 代码风格
-- 使用 TypeScript 严格模式
-- 遵循 Vue 3 Composition API 风格
-- 使用 Tailwind CSS 进行样式编写
+### 前端
+- **框架**: Vue 3 + TypeScript
+- **构建工具**: Vite
+- **UI 组件**: shadcn/ui
+- **样式**: Tailwind CSS
+- **路由**: Vue Router
+- **状态管理**: Vue Composition API
+- **图标**: Lucide Icons
 
-## 贡献指南
+### 后端
+- **运行时**: Node.js 18+
+- **框架**: Express.js
+- **语言**: TypeScript
+- **数据库**: MongoDB (待集成)
+- **认证**: JWT
+- **AI 集成**: OpenAI API
+- **验证**: Zod
 
-1. Fork 本仓库
-2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 提交 Pull Request
+## 📋 API 接口
 
-## 许可证
+### 认证接口
+- `POST /api/auth/register` - 用户注册
+- `POST /api/auth/login` - 用户登录
+- `POST /api/auth/refresh` - 刷新令牌
+- `POST /api/auth/logout` - 用户登出
+
+### 用户接口
+- `GET /api/users/profile` - 获取用户信息
+- `PUT /api/users/profile` - 更新用户信息
+- `GET /api/users/progress` - 获取学习进度
+- `GET /api/users/statistics` - 获取学习统计
+
+### 课程接口
+- `GET /api/lessons` - 获取课程列表
+- `GET /api/lessons/:id` - 获取课程详情
+- `GET /api/lessons/:id/sentences` - 获取句子列表
+- `POST /api/lessons/:id/progress` - 更新学习进度
+
+### AI 接口
+- `POST /api/ai/chat` - AI 对话
+- `POST /api/ai/writing-assessment` - 写作评估
+- `POST /api/ai/sentence-analysis` - 句子分析
+- `POST /api/ai/speaking-evaluation` - 口语评估
+
+详细文档请查看 [backend/README.md](backend/README.md)
+
+## 🎯 开发进度
+
+### 前端
+- ✅ 首页
+- ✅ 学习中心
+- ✅ 课程学习页面
+- ✅ AI 对话界面
+- ✅ 组件化架构
+- ✅ 键盘快捷键支持
+- ⏳ 写作评估页面
+- ⏳ 进度追踪详情
+
+### 后端
+- ✅ Express 服务器
+- ✅ JWT 认证
+- ✅ 基础 API 接口
+- ✅ AI 集成框架
+- ⏳ MongoDB 数据模型
+- ⏳ 数据库 CRUD
+- ⏳ 文件上传
+- ⏳ WebSocket 实时对话
+
+## 📝 环境变量
+
+### 后端 (.env)
+```env
+PORT=3001
+NODE_ENV=development
+MONGODB_URI=mongodb://localhost:27017/english-ai
+JWT_SECRET=your-secret-key
+OPENAI_API_KEY=sk-your-key
+FRONTEND_URL=http://localhost:5173
+```
+
+### 前端
+前端使用 Vite 默认环境变量方式，如需配置在 `.env` 文件中。
+
+## 🔗 链接
+
+- 前端预览：https://5173-fc9e37e7cc8f52b5.monkeycode-ai.online
+- GitHub: https://github.com/heyingfer09072002/Learn-English-AI
+
+## 📄 许可证
 
 MIT License
 
-## 联系方式
+## 👥 贡献
 
-- GitHub: [@heyingfer09072002](https://github.com/heyingfer09072002/Learn-English-AI)
+欢迎贡献代码！请查看开发任务列表。
 
 ---
 
