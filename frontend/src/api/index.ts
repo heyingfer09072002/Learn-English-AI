@@ -32,13 +32,21 @@ apiClient.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem('token')
-      // window.location.href = '/login'
+      window.location.href = '/login'
     }
     return Promise.reject(error)
   }
 )
 
 // 词汇学习相关接口
+export interface User {
+  id: number;
+  email: string;
+  username: string;
+  avatar?: string;
+  level?: number;
+}
+
 export interface VocabularyGroup {
   id: number;
   name: string;
@@ -87,9 +95,29 @@ export interface LearningProgress {
 }
 
 export const api = {
-  // ... existing methods ...
-  
-  // 词汇学习相关
+  // 认证相关接口
+  async register(data: { username: string; email: string; password: string }) {
+    return apiClient.post('/auth/register', data);
+  },
+
+  async login(email: string, password: string) {
+    return apiClient.post('/auth/login', { email, password });
+  },
+
+  async logout() {
+    return apiClient.post('/auth/logout');
+  },
+
+  // 用户相关接口
+  async getUserProfile() {
+    return apiClient.get('/users/profile');
+  },
+
+  async getUserProgress() {
+    return apiClient.get('/users/progress');
+  },
+
+  // 词汇学习相关接口
   async getVocabularyGroups(type?: string) {
     const url = type ? `/vocabulary/groups?type=${type}` : '/vocabulary/groups';
     return apiClient.get(url);
