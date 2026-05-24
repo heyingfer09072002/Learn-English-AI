@@ -53,6 +53,16 @@ export interface Course {
   progress: number;
 }
 
+// 课程 API 响应接口
+export interface Lesson {
+  id: number;
+  lessons: number;
+  level: string;
+  lessons_count: number;
+  title: string;
+  description: string;
+}
+
 export const api = {
   async register(data: { username: string; email: string; password: string }) {
     return apiClient.post('/auth/register', data);
@@ -114,6 +124,10 @@ export const api = {
 
   async getCourses() {
     return apiClient.get('/lessons/courses');
+  },
+  
+  async getLessons() {
+    return apiClient.get('/lessons/lessons');
   },
   
   async getCourseDetail(courseId: number) {

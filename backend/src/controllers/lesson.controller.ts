@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import { asyncHandler } from '../middleware/error.middleware.js';
 import { pool } from '../database/index.js';
 
-// 获取所有课程
 export const getCourses = asyncHandler(async (req: Request, res: Response) => {
   const result = await pool.query('SELECT * FROM courses ORDER BY order_index');
   
@@ -12,7 +11,22 @@ export const getCourses = asyncHandler(async (req: Request, res: Response) => {
   });
 });
 
-// 获取课程详情
+export const getLessons = asyncHandler(async (req: Request, res: Response) => {
+  const result = await pool.query('SELECT * FROM courses ORDER BY order_index');
+  
+  res.json({
+    success: true,
+    data: result.rows.map(c => ({
+      id: c.id,
+      lessons: c.lesson_count,
+      level: c.level,
+      lessons_count: c.lesson_count,
+      title: c.title,
+      description: c.description
+    }))
+  });
+});
+
 export const getCourseDetail = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
   
@@ -31,22 +45,5 @@ export const getCourseDetail = asyncHandler(async (req: Request, res: Response) 
   res.json({
     success: true,
     data: result.rows[0]
-  });
-});
-
-// 获取课程信息（兼容旧 API）
-export const getLessons = asyncHandler(async (req: Request, res: Response) => {
-  const result = await pool.query('SELECT * FROM courses ORDER BY order_index');
-  
-  res.json({
-    success: true,
-    data: result.rows.map(c => ({
-      id: c.id,
-      level: c.level,
-      title: c.title,
-      description: c.description,
-      lessons: c.lesson_count,
-      progress: c.progress || 0
-    }))
   });
 });

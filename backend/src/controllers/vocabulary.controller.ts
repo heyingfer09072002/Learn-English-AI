@@ -233,7 +233,7 @@ export const recordLearning = asyncHandler(async (req: Request, res: Response) =
   const { action, timeSpent = 0 } = req.body;
   
   if (!req.user) {
-    throw new ValidationError('用户未认证');
+    return res.json({ success: true, data: null });
   }
 
   const userId = req.user.userId;
@@ -277,7 +277,7 @@ export const recordReview = asyncHandler(async (req: Request, res: Response) => 
   const { isCorrect, timeSpent = 0 } = req.body;
   
   if (!req.user) {
-    throw new ValidationError('用户未认证');
+    return res.json({ success: true, data: null });
   }
 
   const userId = req.user.userId;
@@ -315,7 +315,7 @@ export const recordReview = asyncHandler(async (req: Request, res: Response) => 
  */
 export const getProgress = asyncHandler(async (req: Request, res: Response) => {
   if (!req.user) {
-    throw new ValidationError('用户未认证');
+    return res.json({ success: true, data: null });
   }
 
   const userId = req.user.userId;
@@ -333,7 +333,7 @@ export const getProgress = asyncHandler(async (req: Request, res: Response) => {
  */
 export const getDueReviews = asyncHandler(async (req: Request, res: Response) => {
   if (!req.user) {
-    throw new ValidationError('用户未认证');
+    return res.json({ success: true, data: null });
   }
 
   const userId = req.user.userId;
@@ -358,7 +358,7 @@ export const getDueReviews = asyncHandler(async (req: Request, res: Response) =>
  */
 export const getStatistics = asyncHandler(async (req: Request, res: Response) => {
   if (!req.user) {
-    throw new ValidationError('用户未认证');
+    return res.json({ success: true, data: null });
   }
 
   const userId = req.user.userId;
