@@ -10,7 +10,6 @@ const apiClient = axios.create({
   timeout: 30000
 })
 
-// 请求拦截器
 apiClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token')
@@ -24,7 +23,6 @@ apiClient.interceptors.request.use(
   }
 )
 
-// 响应拦截器
 apiClient.interceptors.response.use(
   (response) => {
     return response.data
@@ -38,7 +36,6 @@ apiClient.interceptors.response.use(
   }
 )
 
-// 词汇学习相关接口
 export interface User {
   id: number;
   email: string;
@@ -47,55 +44,16 @@ export interface User {
   level?: number;
 }
 
-export interface VocabularyGroup {
+export interface Course {
   id: number;
-  name: string;
+  level: string;
+  title: string;
   description: string;
-  categoryType: string;
-  categoryValue: string;
-  wordCount: number;
-  learnedCount: number;
-  masteryRate: number;
-}
-
-export interface Word {
-  id: number;
-  word: string;
-  phoneticUk?: string;
-  phoneticUs?: string;
-  difficultyLevel?: number;
-  frequencyLevel?: 'high' | 'medium' | 'low';
-}
-
-export interface WordDetail extends Word {
-  pos?: Array<{
-    pos: string;
-    definitionCn: string[];
-    definitionEn?: string;
-    rootAffix?: string;
-    memoryTip?: string;
-  }>;
-  sentences?: Array<{
-    sentenceEn: string;
-    sentenceCn: string;
-    audioUrl?: string;
-  }>;
-  synonyms?: string[];
-  antonyms?: string[];
-}
-
-export interface LearningProgress {
-  totalWords: number;
-  learnedWords: number;
-  masteredWords: number;
-  reviewDueToday: number;
-  totalLearnTime: number;
-  accuracy: number;
-  streakDays: number;
+  lessons: number;
+  progress: number;
 }
 
 export const api = {
-  // 认证相关接口
   async register(data: { username: string; email: string; password: string }) {
     return apiClient.post('/auth/register', data);
   },
@@ -108,7 +66,6 @@ export const api = {
     return apiClient.post('/auth/logout');
   },
 
-  // 用户相关接口
   async getUserProfile() {
     return apiClient.get('/users/profile');
   },
@@ -117,7 +74,6 @@ export const api = {
     return apiClient.get('/users/progress');
   },
 
-  // 词汇学习相关接口
   async getVocabularyGroups(type?: string) {
     const url = type ? `/vocabulary/groups?type=${type}` : '/vocabulary/groups';
     return apiClient.get(url);
@@ -154,6 +110,14 @@ export const api = {
   
   async getVocabularyStatistics(timeRange = 'all') {
     return apiClient.get(`/vocabulary/statistics?timeRange=${timeRange}`);
+  },
+
+  async getCourses() {
+    return apiClient.get('/lessons/courses');
+  },
+  
+  async getCourseDetail(courseId: number) {
+    return apiClient.get(`/lessons/courses/${courseId}`);
   },
 }
 

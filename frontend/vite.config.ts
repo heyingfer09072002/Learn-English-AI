@@ -9,7 +9,13 @@ export default defineConfig({
   server: {
     host: true,
     port: 5173,
-    allowedHosts: ['.monkeycode-ai.online']
+    allowedHosts: ['.monkeycode-ai.online'],
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
+      }
+    }
   },
   resolve: {
     alias: {

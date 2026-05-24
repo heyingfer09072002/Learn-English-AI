@@ -23,7 +23,7 @@
               </svg>
             </div>
           </div>
-          <button class="w-full py-5 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 rounded-2xl font-bold text-lg transition-all transform hover:scale-105 shadow-lg shadow-blue-500/30">
+          <button @click="navigateTo('/vocabulary')" class="w-full py-5 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 rounded-2xl font-bold text-lg transition-all transform hover:scale-105 shadow-lg shadow-blue-500/30">
             开始词汇测试
           </button>
         </div>
@@ -41,7 +41,7 @@
               </svg>
             </div>
           </div>
-          <button class="w-full py-5 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 rounded-2xl font-bold text-lg transition-all transform hover:scale-105 shadow-lg shadow-purple-500/30">
+          <button @click="navigateTo('/vocabulary')" class="w-full py-5 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 rounded-2xl font-bold text-lg transition-all transform hover:scale-105 shadow-lg shadow-purple-500/30">
             开始语法测试
           </button>
         </div>
@@ -137,40 +137,29 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import Navbar from '@/components/layout/Navbar.vue'
+import { api } from '@/api'
 
 const router = useRouter()
+const courses = ref<any[]>([])
+
+// 加载课程数据
+const loadCourses = async () => {
+  try {
+    const res = await api.getCourses()
+    courses.value = res.data || []
+  } catch (error) {
+    console.error('加载课程失败:', error)
+  }
+}
 
 const navigateTo = (path: string) => {
   router.push(path)
 }
 
-const courses = ref([
-  { 
-    id: 1, 
-    level: '初级',
-    title: '衣物与穿搭', 
-    description: '学习日常衣物相关词汇和表达',
-    lessons: 12,
-    progress: 25
-  },
-  { 
-    id: 2, 
-    level: '中级',
-    title: '食物与烹饪', 
-    description: '掌握餐厅点餐和烹饪相关对话',
-    lessons: 15,
-    progress: 60
-  },
-  { 
-    id: 3, 
-    level: '高级',
-    title: '商务会谈', 
-    description: '提升商务英语沟通能力',
-    lessons: 20,
-    progress: 10
-  }
-])
+onMounted(() => {
+  loadCourses()
+})
 </script>

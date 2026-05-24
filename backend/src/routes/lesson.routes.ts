@@ -1,11 +1,14 @@
 import { Router } from 'express';
-import { getLessons, getLessonById, getSentences, updateProgress } from '../controllers/lesson.controller.js';
+import { getCourses, getCourseDetail, getLessons } from '../controllers/lesson.controller.js';
+import { optionalAuthMiddleware } from '../middleware/auth.middleware.js';
 
 const router = Router();
 
-router.get('/', getLessons);
-router.get('/:id', getLessonById);
-router.get('/:id/sentences', getSentences);
-router.post('/:id/progress', updateProgress);
+// 使用可选认证中间件
+router.use(optionalAuthMiddleware);
+
+router.get('/courses', getCourses);
+router.get('/lessons', getLessons);
+router.get('/courses/:id', getCourseDetail);
 
 export default router;
