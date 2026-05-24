@@ -2,12 +2,35 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { config } from './config/index.js';
+import { pool } from './database/index.js';
+import { UserModel } from './models/User.model.js';
+import { LessonModel } from './models/Lesson.model.js';
+import { ProgressModel } from './models/Progress.model.js';
 
 // 加载环境变量
 dotenv.config();
 
 const app = express();
 const PORT = config.port;
+
+// 初始化数据库
+const initDatabase = async () => {
+  try {
+    console.log('📦 正在初始化数据库...');
+    
+    // 创建表
+    await UserModel.createTable();
+    await LessonModel.createTables();
+    await ProgressModel.createTable();
+    
+    // 插入示例数据
+    await LessonModel.seed();
+    
+    console.log('✅ 数据库初始化完成');
+  } catch (error) {
+    console.error('❌ 数据库初始化失败:', error);
+  }
+};
 
 // 中间件
 app.use(cors({
@@ -38,6 +61,7 @@ app.get('/api', (req, res) => {
     name: 'EnglishAI API',
     version: '1.0.0',
     description: 'AI 驱动的英语学习平台后端服务',
+    database: 'PostgreSQL',
     endpoints: {
       health: '/health',
       auth: '/api/auth',
@@ -77,16 +101,24 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 });
 
 // 启动服务器
-app.listen(PORT, () => {
-  console.log(`
+const startServer = async () => {
+  // 等待数据库初始化
+  await initDatabase();
+
+  app.listen(PORT, () => {
+    console.log(`
 ╔═══════════════════════════════════════════════════╗
 ║                                                   ║
 ║   🚀 EnglishAI Backend Server                     ║
 ║   运行在：http://localhost:${PORT}                   ║
+║   数据库：PostgreSQL                              ║
 ║   环境：${config.nodeEnv.padEnd(10)}                         ║
 ║                                                   ║
 ╚═══════════════════════════════════════════════════╝
-  `);
-});
+    `);
+  });
+};
+
+startServer();
 
 export default app;

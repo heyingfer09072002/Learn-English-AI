@@ -2,16 +2,18 @@ import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { config } from '../config/index.js';
+import { UserModel } from '../models/User.model.js';
+import { User } from '../models/User.model.js';
 
-// 临时用户数据（后续替换为数据库）
-const users: any[] = [];
-
+/**
+ * 用户注册
+ */
 export const register = async (req: Request, res: Response) => {
   try {
     const { email, password, username } = req.body;
     
     // 检查用户是否已存在
-    const existingUser = users.find(u => u.email === email);
+    const existingUser = await UserModel.findByEmail(email);
     if (existingUser) {
       return res.status(400).json({
         success: false,
@@ -23,15 +25,11 @@ export const register = async (req: Request, res: Response) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     
     // 创建用户
-    const user = {
-      id: Date.now().toString(),
+    const user = await UserModel.create({
       email,
       username,
-      password: hashedPassword,
-      createdAt: new Date()
-    };
-    
-    users.push(user);
+      passwordHash: hashedPassword
+    });
     
     // 生成 JWT
     const token = jwt.sign(
@@ -68,7 +66,7 @@ export const login = async (req: Request, res: Response) => {
     const { email, password } = req.body;
     
     // 查找用户
-    const user = users.find(u => u.email === email);
+    const user = await UserModel.findByEmail(email);
     if (!user) {
       return res.status(401).json({
         success: false,
@@ -77,7 +75,7 @@ export const login = async (req: Request, res: Response) => {
     }
     
     // 验证密码
-    const isValidPassword = await bcrypt.compare(password, user.password);
+    const isValidPassword = await bcrypt.compare(password, user.passwordHash);
     if (!isValidPassword) {
       return res.status(401).json({
         success: false,
@@ -115,7 +113,7 @@ export const login = async (req: Request, res: Response) => {
 /**
  * 刷新令牌
  */
-export const refreshToken = (req: Request, res: Response) => {
+export const refreshToken = async (req: Request, res: Response) => {
   try {
     const { token } = req.body;
     
@@ -126,10 +124,19 @@ export const refreshToken = (req: Request, res: Response) => {
       });
     }
     
-    const decoded = jwt.verify(token, config.jwtSecret) as any;
+    const decoded = jwt.verify(token, config.jwtSecret) as { userId: number; email: string };
+    
+    // 验证用户是否存在
+    const user = await UserModel.findById(decoded.userId);
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: '用户不存在'
+      });
+    }
     
     const newToken = jwt.sign(
-      { userId: decoded.userId, email: decoded.email },
+      { userId: user.id, email: user.email },
       config.jwtSecret,
       { expiresIn: config.jwtExpiresIn }
     );
@@ -149,8 +156,8 @@ export const refreshToken = (req: Request, res: Response) => {
 /**
  * 用户登出
  */
-export const logout = (req: Request, res: Response) => {
-  // TODO: 将令牌加入黑名单
+export const logout = async (req: Request, res: Response) => {
+  // TODO: 将令牌加入黑名单（使用 Redis）
   res.json({
     success: true,
     message: '登出成功'
