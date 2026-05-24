@@ -10,6 +10,7 @@
     "start": "node dist/index.js",
     "migrate": "tsx src/migrate.ts",
     "db:reset": "tsx src/migrate.ts --reset",
+    "seed": "tsx src/seed-courses.ts",
     "lint": "eslint src/**/*.ts",
     "test": "vitest"
   },

@@ -33,7 +33,7 @@
             </button>
           </div>
           <div class="flex items-center space-x-4 pl-4 border-l border-white/10">
-            <div class="flex items-center space-x-3 px-4 py-2 bg-white/5 rounded-xl border border-white/10 hover:border-white/20 transition-all cursor-pointer">
+            <div @click="navigateToProfile" class="flex items-center space-x-3 px-4 py-2 bg-white/5 rounded-xl border border-white/10 hover:border-white/20 transition-all cursor-pointer">
               <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
                 <span class="text-sm font-bold">U</span>
               </div>
@@ -238,6 +238,45 @@
         </div>
       </div>
 
+      <!-- 课程展示 -->
+      <div class="text-center mb-16">
+        <h2 class="text-5xl font-black mb-4">
+          <span class="bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent">
+            精选课程
+          </span>
+        </h2>
+        <p class="text-xl text-gray-400">
+          8 大主题课程，科学系统化学习
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
+        <div
+          v-for="course in courses"
+          :key="course.id"
+          @click="navigateTo(`/lesson/${course.id}`)"
+          class="group p-6 bg-gradient-to-br from-white/[0.05] to-white/[0.02] border border-white/10 rounded-2xl hover:border-purple-500/50 transition-all duration-500 hover:transform hover:-translate-y-2 cursor-pointer backdrop-blur-sm"
+        >
+          <div class="flex items-start justify-between mb-4">
+            <div class="text-4xl">{{ course.icon }}</div>
+            <span
+              class="px-3 py-1 text-xs font-medium rounded-full"
+              :class="getLevelClass(course.level)"
+            >
+              {{ getLevelName(course.level) }}
+            </span>
+          </div>
+          <h3 class="text-xl font-bold mb-2 text-white">{{ course.title }}</h3>
+          <p class="text-gray-400 text-sm mb-4 line-clamp-2">{{ course.description }}</p>
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-gray-500">{{ course.lessons_count }} 课时</span>
+            <svg class="w-5 h-5 text-purple-400 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+        </div>
+      </div>
+
       <!-- 特点展示 -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <!-- 特点 1 -->
@@ -304,9 +343,21 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { api } from '@/api'
+
+interface Course {
+  id: number
+  title: string
+  description: string
+  level: string
+  icon: string
+  lessons_count: number
+}
 
 const router = useRouter()
+const courses = ref<Course[]>([])
 
 const navItems = [
   { name: '学习中心', path: '/learning' },
@@ -318,6 +369,47 @@ const navItems = [
 const navigateTo = (path: string) => {
   router.push(path)
 }
+
+const navigateToProfile = () => {
+  router.push('/profile')
+}
+
+const navigateTo = (path: string) => {
+  router.push(path)
+}
+
+const getLevelName = (level: string) => {
+  const levelMap: Record<string, string> = {
+    beginner: '初级',
+    intermediate: '中级',
+    advanced: '高级',
+  }
+  return levelMap[level] || '初级'
+}
+
+const getLevelClass = (level: string) => {
+  const classMap: Record<string, string> = {
+    beginner: 'bg-green-500/20 text-green-300 border border-green-500/30',
+    intermediate: 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30',
+    advanced: 'bg-red-500/20 text-red-300 border border-red-500/30',
+  }
+  return classMap[level] || 'bg-gray-500/20 text-gray-300'
+}
+
+const loadCourses = async () => {
+  try {
+    const response = await api.getLessons()
+    if (response.success) {
+      courses.value = response.data.slice(0, 8)
+    }
+  } catch (error) {
+    console.error('Failed to load courses:', error)
+  }
+}
+
+onMounted(() => {
+  loadCourses()
+})
 </script>
 
 <style>
@@ -326,5 +418,11 @@ const navigateTo = (path: string) => {
 }
 .delay-1000 {
   animation-delay: 1000ms;
+}
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 </style>

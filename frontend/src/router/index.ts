@@ -10,7 +10,8 @@ const routes = [
   { path: '/chat', component: Chat },
   { path: '/lesson', component: Lesson },
   { path: '/writing', component: () => import('../pages/Writing.vue') },
-  { path: '/progress', component: () => import('../pages/Progress.vue') }
+  { path: '/progress', component: () => import('../pages/Progress.vue') },
+  { path: '/profile', component: () => import('../pages/Profile.vue') }
 ]
 
 const router = createRouter({
