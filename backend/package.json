@@ -11,8 +11,11 @@
     "migrate": "tsx src/migrate.ts",
     "db:reset": "tsx src/migrate.ts --reset",
     "seed": "tsx src/seed-courses.ts",
+    "import:vocabulary": "tsx src/utils/vocabulary-importer.ts",
     "lint": "eslint src/**/*.ts",
-    "test": "vitest"
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage"
   },
   "keywords": [
     "english",

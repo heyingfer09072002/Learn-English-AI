@@ -6,6 +6,7 @@ import { pool } from './database/index.js';
 import { UserModel } from './models/User.model.js';
 import { LessonModel } from './models/Lesson.model.js';
 import { ProgressModel } from './models/Progress.model.js';
+import { VocabularyMigration } from './database/vocabulary-migrate.js';
 
 // 加载环境变量
 dotenv.config();
@@ -22,6 +23,9 @@ const initDatabase = async () => {
     await UserModel.createTable();
     await LessonModel.createTables();
     await ProgressModel.createTable();
+    
+    // 创建词汇系统表
+    await VocabularyMigration.run();
     
     // 插入示例数据
     await LessonModel.seed();
@@ -55,50 +59,16 @@ app.get('/health', (req, res) => {
   });
 });
 
-// API 根路由
-app.get('/api', (req, res) => {
-  res.json({
-    name: 'EnglishAI API',
-    version: '1.0.0',
-    description: 'AI 驱动的英语学习平台后端服务',
-    database: 'PostgreSQL',
-    endpoints: {
-      health: '/health',
-      auth: '/api/auth',
-      users: '/api/users',
-      lessons: '/api/lessons',
-      ai: '/api/ai'
-    }
-  });
-});
-
 // 路由
-import authRoutes from './routes/auth.routes.js';
-import userRoutes from './routes/user.routes.js';
-import lessonRoutes from './routes/lesson.routes.js';
-import aiRoutes from './routes/ai.routes.js';
-
-app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/lessons', lessonRoutes);
-app.use('/api/ai', aiRoutes);
+import mainRouter from './routes/index.js';
+app.use('/api', mainRouter);
 
 // 404 处理
-app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    message: '接口不存在'
-  });
-});
+import { notFoundMiddleware, errorMiddleware } from './middleware/error.middleware.js';
+app.use(notFoundMiddleware);
 
-// 错误处理
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error('Error:', err);
-  res.status(err.status || 500).json({
-    success: false,
-    message: err.message || '服务器内部错误'
-  });
-});
+// 全局错误处理
+app.use(errorMiddleware);
 
 // 启动服务器
 const startServer = async () => {

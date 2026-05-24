@@ -1,0 +1,122 @@
+[
+  {
+    "word": "abandon",
+    "phoneticUk": "[əˈbændən]",
+    "phoneticUs": "[əˈbændən]",
+    "difficultyLevel": 5,
+    "frequencyLevel": "high",
+    "pos": [{"pos": "verb", "definitionCn": ["遗弃；抛弃；放弃"], "definitionEn": "to leave someone or something behind"}],
+    "sentences": [{"sentenceEn": "He abandoned his car in the snow.", "sentenceCn": "他在雪地里弃车而去。"}],
+    "synonyms": ["desert", "forsake", "leave"],
+    "antonyms": ["keep", "retain"],
+    "categories": [{"categoryType": "exam", "categoryValue": "CET-6"}]
+  },
+  {
+    "word": "ability",
+    "phoneticUk": "[əˈbɪləti]",
+    "phoneticUs": "[əˈbɪləti]",
+    "difficultyLevel": 3,
+    "frequencyLevel": "high",
+    "pos": [{"pos": "noun", "definitionCn": ["能力；才能"], "definitionEn": "the power to do something"}],
+    "sentences": [{"sentenceEn": "She has the ability to pass the exam.", "sentenceCn": "她有能力通过考试。"}],
+    "synonyms": ["capability", "capacity", "skill"],
+    "antonyms": ["inability"],
+    "categories": [{"categoryType": "exam", "categoryValue": "CET-6"}]
+  },
+  {
+    "word": "abnormal",
+    "phoneticUk": "[æbˈnɔːml]",
+    "phoneticUs": "[æbˈnɔːrml]",
+    "difficultyLevel": 4,
+    "frequencyLevel": "high",
+    "pos": [{"pos": "adjective", "definitionCn": ["反常的；异常的"], "definitionEn": "unusual"}],
+    "sentences": [{"sentenceEn": "The weather has been abnormal.", "sentenceCn": "天气一直反常。"}],
+    "synonyms": ["unusual", "atypical"],
+    "antonyms": ["normal"],
+    "categories": [{"categoryType": "exam", "categoryValue": "CET-6"}]
+  },
+  {
+    "word": "aboard",
+    "phoneticUk": "[əˈbɔːd]",
+    "phoneticUs": "[əˈbɔːrd]",
+    "difficultyLevel": 4,
+    "frequencyLevel": "high",
+    "pos": [{"pos": "adverb", "definitionCn": ["在船（车）上"], "definitionEn": "on a ship or aircraft"}],
+    "sentences": [{"sentenceEn": "Welcome aboard!", "sentenceCn": "欢迎登机！"}],
+    "synonyms": ["on board"],
+    "antonyms": ["ashore"],
+    "categories": [{"categoryType": "exam", "categoryValue": "CET-6"}]
+  },
+  {
+    "word": "absolute",
+    "phoneticUk": "[ˈæbsəluːt]",
+    "phoneticUs": "[ˈæbsəluːt]",
+    "difficultyLevel": 4,
+    "frequencyLevel": "high",
+    "pos": [{"pos": "adjective", "definitionCn": ["绝对的；完全的"], "definitionEn": "complete or total"}],
+    "sentences": [{"sentenceEn": "I have absolute confidence.", "sentenceCn": "我有绝对的信心。"}],
+    "synonyms": ["complete", "total"],
+    "antonyms": ["relative"],
+    "categories": [{"categoryType": "exam", "categoryValue": "CET-6"}]
+  },
+  {
+    "word": "absorb",
+    "phoneticUk": "[əbˈzɔːb]",
+    "phoneticUs": "[əbˈzɔːrb]",
+    "difficultyLevel": 5,
+    "frequencyLevel": "high",
+    "pos": [{"pos": "verb", "definitionCn": ["吸收；吸引"], "definitionEn": "to take in liquid or knowledge"}],
+    "sentences": [{"sentenceEn": "Plants absorb sunlight.", "sentenceCn": "植物吸收阳光。"}],
+    "synonyms": ["take in", "assimilate"],
+    "antonyms": ["release", "emit"],
+    "categories": [{"categoryType": "exam", "categoryValue": "CET-6"}]
+  },
+  {
+    "word": "abstract",
+    "phoneticUk": "[ˈæbstrækt]",
+    "phoneticUs": "[ˈæbstrækt]",
+    "difficultyLevel": 6,
+    "frequencyLevel": "high",
+    "pos": [{"pos": "adjective", "definitionCn": ["抽象的"], "definitionEn": "existing as an idea"}],
+    "sentences": [{"sentenceEn": "Abstract art is difficult to understand.", "sentenceCn": "抽象艺术很难理解。"}],
+    "synonyms": ["theoretical", "conceptual"],
+    "antonyms": ["concrete", "practical"],
+    "categories": [{"categoryType": "exam", "categoryValue": "CET-6"}]
+  },
+  {
+    "word": "abundant",
+    "phoneticUk": "[əˈbʌndənt]",
+    "phoneticUs": "[əˈbʌndənt]",
+    "difficultyLevel": 5,
+    "frequencyLevel": "high",
+    "pos": [{"pos": "adjective", "definitionCn": ["丰富的；充裕的"], "definitionEn": "very large in amount"}],
+    "sentences": [{"sentenceEn": "Natural resources are abundant.", "sentenceCn": "自然资源很丰富。"}],
+    "synonyms": ["plentiful", "ample"],
+    "antonyms": ["scarce", "lacking"],
+    "categories": [{"categoryType": "exam", "categoryValue": "CET-6"}]
+  },
+  {
+    "word": "abuse",
+    "phoneticUk": "[əˈbjuːs]",
+    "phoneticUs": "[əˈbjuːs]",
+    "difficultyLevel": 5,
+    "frequencyLevel": "high",
+    "pos": [{"pos": "verb", "definitionCn": ["滥用；虐待"], "definitionEn": "to use something wrongly"}],
+    "sentences": [{"sentenceEn": "He abused his power.", "sentenceCn": "他滥用了权力。"}],
+    "synonyms": ["misuse", "mistreat"],
+    "antonyms": ["respect", "protect"],
+    "categories": [{"categoryType": "exam", "categoryValue": "CET-6"}]
+  },
+  {
+    "word": "academic",
+    "phoneticUk": "[ˌækəˈdemɪk]",
+    "phoneticUs": "[ˌækəˈdemɪk]",
+    "difficultyLevel": 4,
+    "frequencyLevel": "high",
+    "pos": [{"pos": "adjective", "definitionCn": ["学术的；学院的"], "definitionEn": "related to education and scholarship"}],
+    "sentences": [{"sentenceEn": "Academic achievements are important.", "sentenceCn": "学术成就很重要。"}],
+    "synonyms": ["scholarly", "educational"],
+    "antonyms": ["practical", "non-academic"],
+    "categories": [{"categoryType": "exam", "categoryValue": "CET-6"}]
+  }
+]

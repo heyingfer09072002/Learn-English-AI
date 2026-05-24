@@ -75,7 +75,15 @@ export const login = async (req: Request, res: Response) => {
     }
     
     // 验证密码
-    const isValidPassword = await bcrypt.compare(password, user.passwordHash);
+    const passwordHash = user.passwordHash || user.password_hash;
+    if (!passwordHash) {
+      return res.status(401).json({
+        success: false,
+        message: '邮箱或密码错误'
+      });
+    }
+    
+    const isValidPassword = await bcrypt.compare(password, passwordHash);
     if (!isValidPassword) {
       return res.status(401).json({
         success: false,

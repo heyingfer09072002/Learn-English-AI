@@ -38,40 +38,95 @@ apiClient.interceptors.response.use(
   }
 )
 
+// 词汇学习相关接口
+export interface VocabularyGroup {
+  id: number;
+  name: string;
+  description: string;
+  categoryType: string;
+  categoryValue: string;
+  wordCount: number;
+  learnedCount: number;
+  masteryRate: number;
+}
+
+export interface Word {
+  id: number;
+  word: string;
+  phoneticUk?: string;
+  phoneticUs?: string;
+  difficultyLevel?: number;
+  frequencyLevel?: 'high' | 'medium' | 'low';
+}
+
+export interface WordDetail extends Word {
+  pos?: Array<{
+    pos: string;
+    definitionCn: string[];
+    definitionEn?: string;
+    rootAffix?: string;
+    memoryTip?: string;
+  }>;
+  sentences?: Array<{
+    sentenceEn: string;
+    sentenceCn: string;
+    audioUrl?: string;
+  }>;
+  synonyms?: string[];
+  antonyms?: string[];
+}
+
+export interface LearningProgress {
+  totalWords: number;
+  learnedWords: number;
+  masteredWords: number;
+  reviewDueToday: number;
+  totalLearnTime: number;
+  accuracy: number;
+  streakDays: number;
+}
+
 export const api = {
-  async getLessons() {
-    return apiClient.get('/lessons')
+  // ... existing methods ...
+  
+  // 词汇学习相关
+  async getVocabularyGroups(type?: string) {
+    const url = type ? `/vocabulary/groups?type=${type}` : '/vocabulary/groups';
+    return apiClient.get(url);
   },
-  async getLessonById(id: string) {
-    return apiClient.get(`/lessons/${id}`)
+  
+  async getWordsInGroup(groupId: number, page = 1, limit = 20) {
+    return apiClient.get(`/vocabulary/groups/${groupId}/words?page=${page}&limit=${limit}`);
   },
-  async getSentences(lessonId: string) {
-    return apiClient.get(`/lessons/${lessonId}/sentences`)
+  
+  async getWordDetail(wordId: number) {
+    return apiClient.get(`/vocabulary/words/${wordId}`);
   },
-  async login(data: { email: string; password: string }) {
-    return apiClient.post('/auth/login', data)
+  
+  async searchVocabulary(query: string, limit = 20) {
+    return apiClient.get(`/vocabulary/words/search?q=${query}&limit=${limit}`);
   },
-  async register(data: { email: string; password: string; username: string }) {
-    return apiClient.post('/auth/register', data)
+  
+  async recordLearning(wordId: number, action: string, timeSpent = 0) {
+    return apiClient.post(`/vocabulary/words/${wordId}/learn`, { action, timeSpent });
   },
-  async getProfile() {
-    return apiClient.get('/users/profile')
+  
+  async recordReview(wordId: number, isCorrect: boolean, timeSpent = 0) {
+    return apiClient.post(`/vocabulary/words/${wordId}/review`, { isCorrect, timeSpent });
   },
-  async getLearningProgress() {
-    return apiClient.get('/users/progress')
+  
+  async getVocabularyProgress() {
+    return apiClient.get('/vocabulary/progress');
   },
-  async getStatistics() {
-    return apiClient.get('/users/statistics')
+  
+  async getDueReviews(date?: string) {
+    const url = date ? `/vocabulary/review/due?date=${date}` : '/vocabulary/review/due';
+    return apiClient.get(url);
   },
-  async chat(message: string, context?: string) {
-    return apiClient.post('/ai/chat', { message, context })
+  
+  async getVocabularyStatistics(timeRange = 'all') {
+    return apiClient.get(`/vocabulary/statistics?timeRange=${timeRange}`);
   },
-  async assessWriting(text: string) {
-    return apiClient.post('/ai/writing-assessment', { text })
-  },
-  async analyzeSentence(sentence: string) {
-    return apiClient.post('/ai/sentence-analysis', { sentence })
-  }
 }
 
 export default api

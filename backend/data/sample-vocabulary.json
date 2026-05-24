@@ -1,0 +1,223 @@
+[
+  {
+    "word": "abandon",
+    "phoneticUk": "[əˈbændən]",
+    "phoneticUs": "[əˈbændən]",
+    "difficultyLevel": 5,
+    "frequencyLevel": "high",
+    "pos": [
+      {
+        "pos": "verb",
+        "definitionCn": ["遗弃；抛弃；放弃"],
+        "definitionEn": "to leave someone or something behind, especially when you should not",
+        "memoryTip": "a(一个) + band(乐队) + on(在...上) → 一个乐队在台上表演，观众都走了 → 抛弃"
+      }
+    ],
+    "sentences": [
+      {
+        "sentenceEn": "He abandoned his car in the snow.",
+        "sentenceCn": "他在雪地里弃车而去。"
+      },
+      {
+        "sentenceEn": "They had to abandon the sinking ship.",
+        "sentenceCn": "他们不得不弃船逃生。"
+      }
+    ],
+    "synonyms": ["desert", "forsake", "leave"],
+    "antonyms": ["keep", "retain", "maintain"],
+    "categories": [
+      {
+        "categoryType": "exam",
+        "categoryValue": "CET-6",
+        "isPrimary": true
+      },
+      {
+        "categoryType": "frequency",
+        "categoryValue": "high",
+        "isPrimary": false
+      },
+      {
+        "categoryType": "pos",
+        "categoryValue": "verb",
+        "isPrimary": false
+      }
+    ]
+  },
+  {
+    "word": "ability",
+    "phoneticUk": "[əˈbɪləti]",
+    "phoneticUs": "[əˈbɪləti]",
+    "difficultyLevel": 3,
+    "frequencyLevel": "high",
+    "pos": [
+      {
+        "pos": "noun",
+        "definitionCn": ["能力；才能；本领"],
+        "definitionEn": "the physical or mental power or skill needed to do something"
+      }
+    ],
+    "sentences": [
+      {
+        "sentenceEn": "She has the ability to pass the exam.",
+        "sentenceCn": "她有能力通过考试。"
+      },
+      {
+        "sentenceEn": "He was a man of great ability.",
+        "sentenceCn": "他是个很有能力的人。"
+      }
+    ],
+    "synonyms": ["capability", "capacity", "competence", "skill"],
+    "antonyms": ["inability", "incapacity"],
+    "categories": [
+      {
+        "categoryType": "exam",
+        "categoryValue": "CET-6",
+        "isPrimary": true
+      },
+      {
+        "categoryType": "frequency",
+        "categoryValue": "high",
+        "isPrimary": false
+      },
+      {
+        "categoryType": "pos",
+        "categoryValue": "noun",
+        "isPrimary": false
+      }
+    ]
+  },
+  {
+    "word": "abnormal",
+    "phoneticUk": "[æbˈnɔːml]",
+    "phoneticUs": "[æbˈnɔːrml]",
+    "difficultyLevel": 4,
+    "frequencyLevel": "medium",
+    "pos": [
+      {
+        "pos": "adjective",
+        "definitionCn": ["反常的；异常的；不规则的"],
+        "definitionEn": "not usual, typical, or expected"
+      }
+    ],
+    "sentences": [
+      {
+        "sentenceEn": "The weather has been abnormal this year.",
+        "sentenceCn": "今年的天气一直反常。"
+      },
+      {
+        "sentenceEn": "The test results were abnormal.",
+        "sentenceCn": "检测结果异常。"
+      }
+    ],
+    "synonyms": ["unusual", "atypical", "irregular"],
+    "antonyms": ["normal", "typical", "regular"],
+    "categories": [
+      {
+        "categoryType": "exam",
+        "categoryValue": "CET-6",
+        "isPrimary": true
+      },
+      {
+        "categoryType": "frequency",
+        "categoryValue": "medium",
+        "isPrimary": false
+      },
+      {
+        "categoryType": "pos",
+        "categoryValue": "adjective",
+        "isPrimary": false
+      }
+    ]
+  },
+  {
+    "word": "aboard",
+    "phoneticUk": "[əˈbɔːd]",
+    "phoneticUs": "[əˈbɔːrd]",
+    "difficultyLevel": 4,
+    "frequencyLevel": "medium",
+    "pos": [
+      {
+        "pos": "adverb",
+        "definitionCn": ["在船（车）上；上船（车）"],
+        "definitionEn": "on or onto a ship, aircraft, train or other vehicle"
+      },
+      {
+        "pos": "preposition",
+        "definitionCn": ["在（船、车）上"],
+        "definitionEn": "on or onto a ship, aircraft, train or other vehicle"
+      }
+    ],
+    "sentences": [
+      {
+        "sentenceEn": "Welcome aboard!",
+        "sentenceCn": "欢迎登机（船、车）！"
+      },
+      {
+        "sentenceEn": "All passengers were aboard the plane.",
+        "sentenceCn": "所有乘客都已登机。"
+      }
+    ],
+    "synonyms": ["on board", "on ship"],
+    "antonyms": ["ashore"],
+    "categories": [
+      {
+        "categoryType": "exam",
+        "categoryValue": "CET-6",
+        "isPrimary": true
+      },
+      {
+        "categoryType": "frequency",
+        "categoryValue": "medium",
+        "isPrimary": false
+      },
+      {
+        "categoryType": "theme",
+        "categoryValue": "travel",
+        "isPrimary": false
+      }
+    ]
+  },
+  {
+    "word": "absolute",
+    "phoneticUk": "[ˈæbsəluːt]",
+    "phoneticUs": "[ˈæbsəluːt]",
+    "difficultyLevel": 4,
+    "frequencyLevel": "high",
+    "pos": [
+      {
+        "pos": "adjective",
+        "definitionCn": ["绝对的；完全的；确定的"],
+        "definitionEn": "complete or total; certain with no doubt"
+      }
+    ],
+    "sentences": [
+      {
+        "sentenceEn": "I have absolute confidence in you.",
+        "sentenceCn": "我对你有绝对的信心。"
+      },
+      {
+        "sentenceEn": "The story is absolute nonsense.",
+        "sentenceCn": "这个故事完全是胡说八道。"
+      }
+    ],
+    "synonyms": ["complete", "total", "utter", "perfect"],
+    "antonyms": ["relative", "partial", "limited"],
+    "categories": [
+      {
+        "categoryType": "exam",
+        "categoryValue": "CET-6",
+        "isPrimary": true
+      },
+      {
+        "categoryType": "frequency",
+        "categoryValue": "high",
+        "isPrimary": false
+      },
+      {
+        "categoryType": "pos",
+        "categoryValue": "adjective",
+        "isPrimary": false
+      }
+    ]
+  }
+]

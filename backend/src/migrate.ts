@@ -2,6 +2,7 @@ import { pool } from './database/index.js';
 import { UserModel } from './models/User.model.js';
 import { LessonModel } from './models/Lesson.model.js';
 import { ProgressModel } from './models/Progress.model.js';
+import { VocabularyMigration } from './database/vocabulary-migrate.js';
 
 const runMigrations = async () => {
   console.log('🚀 开始执行数据库迁移...\n');
@@ -12,6 +13,10 @@ const runMigrations = async () => {
     await UserModel.createTable();
     await LessonModel.createTables();
     await ProgressModel.createTable();
+    
+    // 创建词汇系统表
+    console.log('\n📦 创建词汇系统数据表...');
+    await VocabularyMigration.run();
 
     // 插入示例数据
     console.log('\n📝 插入示例数据...');
