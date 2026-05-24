@@ -374,10 +374,6 @@ const navigateToProfile = () => {
   router.push('/profile')
 }
 
-const navigateTo = (path: string) => {
-  router.push(path)
-}
-
 const getLevelName = (level: string) => {
   const levelMap: Record<string, string> = {
     beginner: '初级',
