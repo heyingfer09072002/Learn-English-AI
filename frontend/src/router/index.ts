@@ -1,25 +1,92 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../pages/Home.vue'
-import Learning from '../pages/Learning.vue'
-import Chat from '../pages/Chat.vue'
-import Lesson from '../pages/Lesson.vue'
-import Login from '../pages/Login.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+
+// 句乐部新功能页面
+import Home from '../pages/Home.vue';
+import PracticePage from '../pages/PracticePage.vue';
+import CoursePlaza from '../pages/CoursePlaza.vue';
+import StatisticsPage from '../pages/StatisticsPage.vue';
+import ProfilePage from '../pages/ProfilePage.vue';
+import CourseEditor from '../pages/CourseEditor.vue';
+import PKArena from '../pages/PKArena.vue';
+
+// 原有功能页面
+import Chat from '../pages/Chat.vue';
+import VocabularyLearning from '../pages/VocabularyLearning.vue';
+import Learning from '../pages/Learning.vue';
+import Lesson from '../pages/Lesson.vue';
+import Writing from '../pages/Writing.vue';
 
 const routes = [
-  { path: '/', component: Home },
-  { path: '/learning', component: Learning },
-  { path: '/chat', component: Chat },
-  { path: '/lesson', component: Lesson },
-  { path: '/login', component: Login },
-  { path: '/writing', component: () => import('../pages/Writing.vue') },
-  { path: '/progress', component: () => import('../pages/Progress.vue') },
-  { path: '/profile', component: () => import('../pages/Profile.vue') },
-  { path: '/vocabulary', component: () => import('../pages/VocabularyLearning.vue') }
-]
+  // 首页
+  {
+    path: '/',
+    name: 'Home',
+    component: Home,
+  },
+  
+  // 句乐部新功能
+  {
+    path: '/practice',
+    name: 'Practice',
+    component: PracticePage,
+  },
+  {
+    path: '/courses',
+    name: 'Courses',
+    component: CoursePlaza,
+  },
+  {
+    path: '/courses/create',
+    name: 'CourseEditor',
+    component: CourseEditor,
+  },
+  {
+    path: '/statistics',
+    name: 'Statistics',
+    component: StatisticsPage,
+  },
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: ProfilePage,
+  },
+  {
+    path: '/pk-arena',
+    name: 'PKArena',
+    component: PKArena,
+  },
+  
+  // 原有功能
+  {
+    path: '/chat',
+    name: 'Chat',
+    component: Chat,
+  },
+  {
+    path: '/vocabulary',
+    name: 'Vocabulary',
+    component: VocabularyLearning,
+  },
+  {
+    path: '/lessons',
+    name: 'Lessons',
+    component: Learning,
+  },
+  {
+    path: '/lesson/:id',
+    name: 'LessonDetail',
+    component: Lesson,
+  },
+  {
+    path: '/writing',
+    name: 'Writing',
+    component: Writing,
+  },
+];
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
-})
+  routes,
+});
 
-export default router
+export default router;

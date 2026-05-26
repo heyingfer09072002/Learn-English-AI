@@ -9,6 +9,7 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "migrate": "tsx src/migrate.ts",
+    "migrate:julebu": "tsx src/migrate-julebu.ts",
     "db:reset": "tsx src/migrate.ts --reset",
     "seed": "tsx src/seed-courses.ts",
     "import:vocabulary": "tsx src/utils/vocabulary-importer.ts",
@@ -33,6 +34,9 @@
     "jsonwebtoken": "^9.0.2",
     "openai": "^4.20.1",
     "pg": "^8.21.0",
+    "redis": "^5.12.1",
+    "socket.io": "^4.8.3",
+    "socket.io-client": "^4.8.3",
     "zod": "^3.22.4"
   },
   "devDependencies": {

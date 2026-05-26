@@ -62,6 +62,12 @@ export const tokenBlacklist = new TokenBlacklistCache();
  * 验证令牌格式、签名、有效期和黑名单
  */
 export const authMiddleware = asyncHandler(async (req: AuthRequest, res: Response, next: NextFunction) => {
+  // 开发环境允许匿名访问 GET 请求
+  if (process.env.ALLOW_ANONYMOUS === 'true' && req.method === 'GET') {
+    req.user = { userId: 0, email: 'anonymous@dev.local' };
+    return next();
+  }
+  
   const authHeader = req.headers.authorization;
   
   if (!authHeader || !authHeader.startsWith('Bearer ')) {

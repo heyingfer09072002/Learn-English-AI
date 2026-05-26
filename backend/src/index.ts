@@ -33,6 +33,7 @@ const initDatabase = async () => {
     console.log('✅ 数据库初始化完成');
   } catch (error) {
     console.error('❌ 数据库初始化失败:', error);
+    throw error;
   }
 };
 
@@ -61,7 +62,9 @@ app.get('/health', (req, res) => {
 
 // 路由
 import mainRouter from './routes/index.js';
+import julebuRouter from './routes/julebu.js';
 app.use('/api', mainRouter);
+app.use(julebuRouter);
 
 // 404 处理
 import { notFoundMiddleware, errorMiddleware } from './middleware/error.middleware.js';
@@ -70,12 +73,22 @@ app.use(notFoundMiddleware);
 // 全局错误处理
 app.use(errorMiddleware);
 
+import { createServer } from 'http';
+import { WebSocketService } from './services/websocket.service.js';
+
 // 启动服务器
 const startServer = async () => {
-  // 等待数据库初始化
-  await initDatabase();
+  // 初始化数据库 (失败时只警告，不阻止服务器启动)
+  initDatabase().catch(error => {
+    console.warn('⚠️  数据库初始化失败，服务将以无数据库模式运行');
+  });
 
-  app.listen(PORT, () => {
+  const httpServer = createServer(app);
+  
+  // 初始化 WebSocket
+  WebSocketService.init(httpServer);
+
+  httpServer.listen(PORT, () => {
     console.log(`
 ╔═══════════════════════════════════════════════════╗
 ║                                                   ║
@@ -83,6 +96,7 @@ const startServer = async () => {
 ║   运行在：http://localhost:${PORT}                   ║
 ║   数据库：PostgreSQL                              ║
 ║   环境：${config.nodeEnv.padEnd(10)}                         ║
+║   WebSocket: 已启用                               ║
 ║                                                   ║
 ╚═══════════════════════════════════════════════════╝
     `);

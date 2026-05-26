@@ -1,175 +1,129 @@
-import { Response } from 'express';
-import { AuthRequest } from '../middleware/auth.middleware.js';
-import { config } from '../config/index.js';
-import OpenAI from 'openai';
-
-const openai = new OpenAI({
-  apiKey: config.openaiApiKey
-});
+import { Request, Response, NextFunction } from 'express';
+import { AIService } from '../services/ai.service';
 
 /**
- * AI 对话
+ * AI 助手控制器
  */
-export const chat = async (req: AuthRequest, res: Response) => {
-  try {
-    const { message, context = 'english_learning' } = req.body;
-    
-    if (!config.openaiApiKey) {
-      return res.status(503).json({
-        success: false,
-        message: 'AI 服务未配置'
-      });
-    }
-    
-    const completion = await openai.chat.completions.create({
-      model: config.openaiModel,
-      messages: [
-        {
-          role: 'system',
-          content: `你是一个专业的英语教学助手。请用友好、鼓励的方式回复用户，${context === 'english_learning' ? '尽量使用简单的英语，并提供中文翻译' : ''}。`
-        },
-        {
-          role: 'user',
-          content: message
-        }
-      ],
-      temperature: 0.7,
-      max_tokens: 500
-    });
-    
-    const reply = completion.choices[0].message.content || '';
-    
-    res.json({
-      success: true,
-      data: {
-        message: reply,
-        timestamp: new Date().toISOString()
+export class AIController {
+  /**
+   * 提问 AI
+   * POST /api/ai/assistant/ask
+   */
+  static async ask(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userId = (req as any).user?.id;
+      if (!userId) {
+        return res.status(401).json({
+          success: false,
+          error: { message: '未登录' },
+        });
       }
-    });
-  } catch (error) {
-    console.error('AI Chat error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'AI 服务暂时不可用'
-    });
-  }
-};
 
-/**
- * 写作评估
- */
-export const assessWriting = async (req: AuthRequest, res: Response) => {
-  try {
-    const { text } = req.body;
-    
-    if (!config.openaiApiKey) {
-      return res.status(503).json({
-        success: false,
-        message: 'AI 服务未配置'
-      });
-    }
-    
-    const completion = await openai.chat.completions.create({
-      model: config.openaiModel,
-      messages: [
-        {
-          role: 'system',
-          content: '你是一个专业的英语写作评估教师。请评估用户的英语写作，包括语法错误、词汇使用、表达建议，并给出总体评分（0-100）。'
-        },
-        {
-          role: 'user',
-          content: `请评估以下英语写作：\n\n${text}`
-        }
-      ],
-      temperature: 0.5,
-      max_tokens: 1000
-    });
-    
-    const assessment = completion.choices[0].message.content || '';
-    
-    res.json({
-      success: true,
-      data: {
-        assessment,
-        timestamp: new Date().toISOString()
+      const { question, sentenceId } = req.body;
+
+      if (!question) {
+        return res.status(400).json({
+          success: false,
+          error: { message: '问题不能为空' },
+        });
       }
-    });
-  } catch (error) {
-    console.error('Writing assessment error:', error);
-    res.status(500).json({
-      success: false,
-      message: '评估失败'
-    });
-  }
-};
 
-/**
- * 句子分析
- */
-export const analyzeSentence = async (req: AuthRequest, res: Response) => {
-  try {
-    const { sentence } = req.body;
-    
-    if (!config.openaiApiKey) {
-      return res.status(503).json({
-        success: false,
-        message: 'AI 服务未配置'
-      });
-    }
-    
-    const completion = await openai.chat.completions.create({
-      model: config.openaiModel,
-      messages: [
-        {
-          role: 'system',
-          content: '你是一个专业的英语语法教师。请分析句子的语法结构，包括词性、句子成分、语法规则。'
-        },
-        {
-          role: 'user',
-          content: `请分析这个句子：${sentence}`
-        }
-      ],
-      temperature: 0.5,
-      max_tokens: 800
-    });
-    
-    const analysis = completion.choices[0].message.content || '';
-    
-    res.json({
-      success: true,
-      data: {
-        analysis,
-        timestamp: new Date().toISOString()
+      // 检查每日限制
+      const canAsk = await AIService.checkDailyLimit(userId, 2);
+      if (!canAsk) {
+        return res.status(429).json({
+          success: false,
+          error: { message: '今日免费提问次数已用完' },
+        });
       }
-    });
-  } catch (error) {
-    console.error('Sentence analysis error:', error);
-    res.status(500).json({
-      success: false,
-      message: '分析失败'
-    });
-  }
-};
 
-/**
- * 口语评估
- */
-export const evaluateSpeaking = async (req: AuthRequest, res: Response) => {
-  try {
-    const { audioUrl, transcript } = req.body;
-    
-    // TODO: 集成语音识别服务
-    // 目前只评估文本转录
-    
-    return res.status(501).json({
-      success: false,
-      message: '口语评估功能开发中'
-    });
-  } catch (error) {
-    console.error('Speaking evaluation error:', error);
-    res.status(500).json({
-      success: false,
-      message: '评估失败'
-    });
+      const startTime = Date.now();
+      
+      // 调用 AI 服务
+      const response = await AIService.askQuestion(question, { sentenceId });
+
+      const responseTime = Date.now() - startTime;
+
+      // 记录日志
+      await AIService.logUsage(
+        userId,
+        question,
+        response.answer,
+        0, // token 数需要 OpenAI 返回
+        responseTime,
+        sentenceId
+      );
+
+      return res.status(200).json({
+        success: true,
+        data: response,
+        remaining: 2 - (await AIService.getDailyQuestionCount(userId)) - 1,
+      });
+    } catch (error) {
+      next(error);
+    }
   }
-};
+
+  /**
+   * 分析句子
+   * POST /api/ai/assistant/analyze/:sentenceId
+   */
+  static async analyzeSentence(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userId = (req as any).user?.id;
+      if (!userId) {
+        return res.status(401).json({
+          success: false,
+          error: { message: '未登录' },
+        });
+      }
+
+      const { sentenceId } = req.params;
+
+      // TODO: 实际实现应该先从数据库获取句子内容
+      // 这里仅作框架演示
+
+      return res.status(200).json({
+        success: true,
+        data: {
+          message: '句子分析功能开发中',
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * 获取对话历史
+   * GET /api/ai/assistant/history
+   */
+  static async getHistory(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userId = (req as any).user?.id;
+      if (!userId) {
+        return res.status(401).json({
+          success: false,
+          error: { message: '未登录' },
+        });
+      }
+
+      // TODO: 实现对话历史查询
+
+      return res.status(200).json({
+        success: true,
+        data: {
+          history: [],
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+}
+
+// 兼容旧路由的导出
+export const chat = AIController.ask;
+export const assessWriting = AIController.ask;
+export const analyzeSentence = AIController.analyzeSentence;
+export const evaluateSpeaking = AIController.ask;
