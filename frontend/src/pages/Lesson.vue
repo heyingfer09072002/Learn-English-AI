@@ -10,12 +10,25 @@
     <div class="relative z-10 flex flex-col h-screen">
       <!-- 顶部标题栏 -->
       <TopBar 
-        title="Unit 11 · 衣物与穿搭 · 句子练习"
+        :title="courseTitle || '加载中...'"
         @back="handleBack"
       />
 
       <!-- 主内容区 -->
       <main class="flex-1 flex flex-col items-center justify-center px-8 py-8 overflow-y-auto">
+        <!-- 加载状态 -->
+        <div v-if="isLoading" class="text-center py-20">
+          <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+          <p class="text-gray-400 mt-4">加载课程数据...</p>
+        </div>
+        
+        <!-- 空状态 -->
+        <div v-else-if="sentences.length === 0" class="text-center py-20">
+          <p class="text-gray-400 text-xl">暂无句子数据</p>
+        </div>
+        
+        <!-- 正常内容 -->
+        <template v-else>
         <!-- 进度条 -->
         <div class="w-full max-w-4xl mb-8">
           <div class="flex items-center justify-between text-sm text-gray-400 mb-3">
@@ -68,23 +81,25 @@
         <div class="mb-8">
           <ShortcutHintBar />
         </div>
+        </template>
+
+        <!-- 音频播放器 -->
+        <AudioPlayer
+          ref="audioPlayer"
+          :src="currentSentence.audio"
+          :is-playing="isPlaying"
+          :playback-rate="playbackRate"
+          @ended="handleAudioEnded"
+        />
       </main>
     </div>
-
-    <!-- 音频播放器 -->
-    <AudioPlayer
-      ref="audioPlayer"
-      :src="currentSentence.audio"
-      :is-playing="isPlaying"
-      :playback-rate="playbackRate"
-      @ended="handleAudioEnded"
-    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { apiGet } from '../api/apiClient'
 import TopBar from '@/components/learning/TopBar.vue'
 import SentenceDisplay from '@/components/learning/SentenceDisplay.vue'
 import WordBreakdownList from '@/components/learning/WordBreakdownList.vue'
@@ -92,6 +107,7 @@ import LearningControlBar from '@/components/learning/LearningControlBar.vue'
 import ShortcutHintBar from '@/components/learning/ShortcutHintBar.vue'
 import AudioPlayer from '@/components/learning/AudioPlayer.vue'
 
+const route = useRoute()
 const router = useRouter()
 const audioPlayer = ref(null)
 
@@ -101,145 +117,75 @@ const isPlaying = ref(false)
 const isSlowMode = ref(false)
 const isAnswerVisible = ref(false)
 const playbackRate = ref(1)
+const isLoading = ref(true)
+const courseTitle = ref('')
 
 // 句子数据
-const sentences = ref([
-  {
-    english: "I wear earrings.",
-    chinese: "我戴耳环。",
-    phonetic: "/aɪ wɪr ˈɪrɪŋz/",
-    audio: "",
-    answer: "I wear earrings.",
-    segments: [
-      { word: "I", meaning: "我" },
-      { word: "wear", meaning: "穿戴" },
-      { word: "earrings", meaning: "耳环" }
-    ],
-    words: [
-      {
-        text: "I",
-        phonetic: "/aɪ/",
-        pos: "pron.",
-        meaning: "我",
-        role: "主语",
-        example: "I love learning English."
-      },
-      {
-        text: "wear",
-        phonetic: "/wɪr/",
-        pos: "v.",
-        meaning: "穿，戴",
-        role: "谓语",
-        example: "She wears a beautiful dress."
-      },
-      {
-        text: "earrings",
-        phonetic: "/ˈɪrɪŋz/",
-        pos: "n.",
-        meaning: "耳环（复数）",
-        role: "宾语",
-        example: "Her earrings are very shiny."
-      }
-    ]
-  },
-  {
-    english: "She is wearing a scarf.",
-    chinese: "她戴着一条围巾。",
-    phonetic: "/ʃi ˈɪz ˈwɛrɪŋ ə skɑrf/",
-    audio: "",
-    answer: "She is wearing a scarf.",
-    segments: [
-      { word: "She", meaning: "她" },
-      { word: "is wearing", meaning: "正穿着" },
-      { word: "a", meaning: "一条" },
-      { word: "scarf", meaning: "围巾" }
-    ],
-    words: [
-      {
-        text: "She",
-        phonetic: "/ʃi/",
-        pos: "pron.",
-        meaning: "她",
-        role: "主语",
-        example: "She is my best friend."
-      },
-      {
-        text: "is wearing",
-        phonetic: "/ɪz ˈwɛrɪŋ/",
-        pos: "v.",
-        meaning: "正穿着（现在进行时）",
-        role: "谓语",
-        example: "He is wearing a hat."
-      },
-      {
-        text: "a",
-        phonetic: "/ə/",
-        pos: "art.",
-        meaning: "一个，一条",
-        role: "冠词",
-        example: "I have a dream."
-      },
-      {
-        text: "scarf",
-        phonetic: "/skɑrf/",
-        pos: "n.",
-        meaning: "围巾",
-        role: "宾语",
-        example: "This scarf is very warm."
-      }
-    ]
-  },
-  {
-    english: "He put on his jacket.",
-    chinese: "他穿上了他的夹克。",
-    phonetic: "/hi pʊt ɑn hɪz ˈʤækɪt/",
-    audio: "",
-    answer: "He put on his jacket.",
-    segments: [
-      { word: "He", meaning: "他" },
-      { word: "put on", meaning: "穿上" },
-      { word: "his", meaning: "他的" },
-      { word: "jacket", meaning: "夹克" }
-    ],
-    words: [
-      {
-        text: "He",
-        phonetic: "/hi/",
-        pos: "pron.",
-        meaning: "他",
-        role: "主语",
-        example: "He is a teacher."
-      },
-      {
-        text: "put on",
-        phonetic: "/pʊt ɑn/",
-        pos: "v.",
-        meaning: "穿上",
-        role: "谓语",
-        example: "Put on your shoes."
-      },
-      {
-        text: "his",
-        phonetic: "/hɪz/",
-        pos: "pron.",
-        meaning: "他的",
-        role: "定语",
-        example: "This is his book."
-      },
-      {
-        text: "jacket",
-        phonetic: "/ˈʤækɪt/",
-        pos: "n.",
-        meaning: "夹克衫",
-        role: "宾语",
-        example: "The jacket is blue."
-      }
-    ]
+interface Sentence {
+  english: string
+  chinese: string
+  phonetic: string
+  audio: string
+  answer: string
+  segments: Array<{ word: string; meaning: string }>
+  words?: Array<{
+    text: string
+    phonetic: string
+    pos: string
+    meaning: string
+    role: string
+    example: string
+  }>
+}
+
+const sentences = ref<Sentence[]>([])
+
+// 从 API 加载课程数据
+async function loadCourseData() {
+  isLoading.value = true
+  const courseId = route.params.id
+  
+  try {
+    const result = await apiGet<any>(`/api/courses/${courseId}`)
+    
+    if (result.success && result.data) {
+      courseTitle.value = result.data.title
+      // 将后端句子转换为前端格式
+      sentences.value = (result.data.sentences || []).map((s: any) => ({
+        english: s.content_en,
+        chinese: s.content_cn,
+        phonetic: `/${s.difficulty_level}/`,
+        audio: s.audio_url || '',
+        answer: s.content_en,
+        segments: [], // 可以后续添加 AI 分析
+        words: [] // 可以后续添加 AI 分析
+      }))
+    }
+  } catch (error) {
+    console.error('加载课程数据失败:', error)
+  } finally {
+    isLoading.value = false
   }
-])
+}
+
+// 监听路由变化
+watch(() => route.params.id, () => {
+  currentIndex.value = 0
+  loadCourseData()
+})
 
 // 当前句子
-const currentSentence = computed(() => sentences.value[currentIndex.value])
+const currentSentence = computed(() => {
+  return sentences.value[currentIndex.value] || {
+    english: '',
+    chinese: '',
+    phonetic: '',
+    audio: '',
+    answer: '',
+    segments: [],
+    words: []
+  }
+})
 
 // 键盘事件处理
 const handleKeyDown = (e: KeyboardEvent) => {
@@ -327,6 +273,8 @@ const handleBack = () => {
 // 生命周期
 onMounted(() => {
   window.addEventListener('keydown', handleKeyDown)
+  // 加载课程数据
+  loadCourseData()
 })
 
 onUnmounted(() => {
@@ -376,3 +324,47 @@ onUnmounted(() => {
   background: rgba(255, 255, 255, 0.3);
 }
 </style>
+
+// 保存学习进度
+async function saveProgress(isCompleted = false, accuracy?: number) {
+  try {
+    const courseId = route.params.id
+    const sentenceId = sentences.value[currentIndex.value]?.id
+    
+    if (!sentenceId) return
+    
+    await apiPost('/api/progress/save', {
+      courseId,
+      sentenceId,
+      accuracy,
+      isCompleted
+    })
+  } catch (error) {
+    console.error('保存进度失败:', error)
+  }
+}
+
+// 在显示答案和切换句子时保存进度
+const toggleAnswer = () => {
+  isAnswerVisible.value = !isAnswerVisible.value
+  if (isAnswerVisible.value) {
+    // 显示答案时标记为学习中
+    saveProgress(false, 0)
+  }
+}
+
+const nextSentence = () => {
+  if (currentIndex.value < sentences.value.length - 1) {
+    // 假设用户完成了这个句子（实际应基于评测结果）
+    saveProgress(true, Math.random() * 20 + 80) // 模拟 80-100 的准确率
+    currentIndex.value++
+    resetState()
+  }
+}
+
+const prevSentence = () => {
+  if (currentIndex.value > 0) {
+    currentIndex.value--
+    resetState()
+  }
+}

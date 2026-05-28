@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
-import ComboDisplay from '../components/game/ComboDisplay.vue';
-import RatingAnimation from '../components/game/RatingAnimation.vue';
+import { ref, onMounted } from 'vue';
+import { apiPost, apiGet } from '../api/apiClient';
 
 // 游戏状态
 const gameState = ref<'lobby' | 'matching' | 'playing' | 'result'>('lobby');
@@ -10,6 +9,7 @@ const timeLeft = ref(30);
 const currentSentence = ref('');
 const userInput = ref('');
 const feedback = ref<'correct' | 'incorrect' | null>(null);
+const error = ref('');
 
 // 对战数据
 const playerScore = ref(0);
@@ -17,59 +17,69 @@ const opponentScore = ref(0);
 const round = ref(1);
 const totalRounds = 5;
 
-// WebSocket
-let ws: WebSocket | null = null;
-
-// 模拟对手
-const mockOpponents = [
-  { username: '英语达人', avatar: '🦁', score: 0 },
-  { username: '学习王者', avatar: '🐯', score: 0 },
-  { username: '词汇大师', avatar: '🦅', score: 0 },
-];
-
-// 开始匹配
-function startMatching() {
+// 从后端获取对手和句子
+async function startMatching() {
   gameState.value = 'matching';
+  error.value = '';
   
-  // 模拟匹配成功
-  setTimeout(() => {
-    const randomOpponent = mockOpponents[Math.floor(Math.random() * mockOpponents.length)];
-    opponent.value = { ...randomOpponent };
+  try {
+    // 请求匹配对手
+    const result = await apiPost('/api/pk/match');
+    
+    if (result.success && result.data) {
+      opponent.value = result.data.opponent;
+      gameState.value = 'playing';
+      await loadSentence();
+    } else {
+      // 匹配失败，暂时使用默认对手
+      opponent.value = {
+        username: 'AI 对手',
+        avatar: '🤖',
+        score: 0,
+      };
+      gameState.value = 'playing';
+      await loadSentence();
+    }
+  } catch (err) {
+    console.error('匹配失败:', err);
+    // 使用默认对手继续游戏
+    opponent.value = {
+      username: 'AI 对手',
+      avatar: '🤖',
+      score: 0,
+    };
     gameState.value = 'playing';
-    startRound();
-  }, 2000);
-  
-  // 实际应该连接 WebSocket
-  // connectWebSocket();
+    await loadSentence();
+  }
 }
 
-// 连接 WebSocket (预留)
-function connectWebSocket() {
-  const wsUrl = `ws://localhost:3001/ws/pk?token=${localStorage.getItem('token')}`;
-  ws = new WebSocket(wsUrl);
-  
-  ws.onopen = () => {
-    console.log('WebSocket connected');
-    ws?.send(JSON.stringify({ type: 'match_start' }));
-  };
-  
-  ws.onmessage = (event) => {
-    const data = JSON.parse(event.data);
+// 从后端获取句子
+async function loadSentence() {
+  try {
+    const result = await apiGet('/api/pk/sentence');
     
-    switch (data.type) {
-      case 'match_found':
-        opponent.value = data.opponent;
-        gameState.value = 'playing';
-        startRound();
-        break;
-      case 'opponent_score':
-        opponentScore.value = data.score;
-        break;
-      case 'round_end':
-        handleRoundEnd();
-        break;
+    if (result.success && result.data) {
+      currentSentence.value = result.data.sentence;
+    } else {
+      // 使用预设句子作为后备
+      const fallbackSentences = [
+        'Practice makes perfect.',
+        'The early bird catches the worm.',
+        'Where there is a will, there is a way.',
+        'Knowledge is power.',
+        'Time flies when you have fun.',
+      ];
+      currentSentence.value = fallbackSentences[(round.value - 1) % fallbackSentences.length];
     }
-  };
+  } catch (err) {
+    console.error('获取句子失败:', err);
+    // 使用预设句子
+    const fallbackSentences = [
+      'Practice makes perfect.',
+      'Actions speak louder than words.',
+    ];
+    currentSentence.value = fallbackSentences[(round.value - 1) % fallbackSentences.length];
+  }
 }
 
 // 开始回合
@@ -77,16 +87,6 @@ function startRound() {
   timeLeft.value = 30;
   userInput.value = '';
   feedback.value = null;
-  
-  // 模拟句子（实际应该从后端获取）
-  const sentences = [
-    'The quick brown fox jumps over the lazy dog.',
-    'Practice makes perfect.',
-    'Knowledge is power.',
-    'Time flies when you have fun.',
-    'Every cloud has a silver lining.',
-  ];
-  currentSentence.value = sentences[round.value - 1] || 'Default sentence.';
   
   // 倒计时
   const timer = setInterval(() => {
@@ -99,24 +99,45 @@ function startRound() {
   }, 1000);
 }
 
-// 提交答案
-function submitAnswer() {
-  const isCorrect = userInput.value.trim().toLowerCase() === 
-                    currentSentence.value.toLowerCase();
+// 提交答案到后端
+async function submitAnswer() {
+  feedback.value = null;
   
-  feedback.value = isCorrect ? 'correct' : 'incorrect';
-  
-  if (isCorrect) {
-    playerScore.value += 100;
-  }
-  
-  // 发送答案到服务器
-  if (ws?.readyState === WebSocket.OPEN) {
-    ws.send(JSON.stringify({
-      type: 'submit_answer',
+  try {
+    const result = await apiPost('/api/pk/submit', {
+      round: round.value,
       answer: userInput.value,
-      isCorrect,
-    }));
+      sentenceId: round.value, // TODO: 需要后端返回实际句子 ID
+    });
+    
+    if (result.success) {
+      const isCorrect = result.data?.isCorrect || (userInput.value.trim().toLowerCase() === currentSentence.value.toLowerCase());
+      feedback.value = isCorrect ? 'correct' : 'incorrect';
+      
+      if (isCorrect) {
+        playerScore.value += 100;
+      }
+      
+      // 更新对手分数（从后端获取）
+      if (result.data?.opponentScore !== undefined) {
+        opponentScore.value = result.data.opponentScore;
+      }
+    } else {
+      // 本地验证
+      const isCorrect = userInput.value.trim().toLowerCase() === currentSentence.value.toLowerCase();
+      feedback.value = isCorrect ? 'correct' : 'incorrect';
+      if (isCorrect) {
+        playerScore.value += 100;
+      }
+    }
+  } catch (err) {
+    console.error('提交失败:', err);
+    // 本地验证
+    const isCorrect = userInput.value.trim().toLowerCase() === currentSentence.value.toLowerCase();
+    feedback.value = isCorrect ? 'correct' : 'incorrect';
+    if (isCorrect) {
+      playerScore.value += 100;
+    }
   }
   
   // 延迟后进入下一回合
@@ -124,6 +145,7 @@ function submitAnswer() {
     if (round.value < totalRounds) {
       round.value++;
       startRound();
+      loadSentence();
     } else {
       gameState.value = 'result';
     }
@@ -138,23 +160,17 @@ function handleTimeUp() {
     if (round.value < totalRounds) {
       round.value++;
       startRound();
+      loadSentence();
     } else {
       gameState.value = 'result';
     }
   }, 1500);
 }
 
-// 回合结束
-function handleRoundEnd() {
-  // 处理对手得分更新等
+// 当进入游戏状态时开始回合
+function onGameStart() {
+  startRound();
 }
-
-// 清理
-onUnmounted(() => {
-  if (ws) {
-    ws.close();
-  }
-});
 </script>
 
 <template>
@@ -165,7 +181,11 @@ onUnmounted(() => {
         <h1 class="text-5xl font-bold text-gray-800 mb-4">⚔️ PK 竞技</h1>
         <p class="text-xl text-gray-600 mb-8">与其他学习者实时对战，提升英语水平！</p>
         
-        <div class="bg-white rounded-2xl shadow-xl p-8 mb-8">
+        <div v-if="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6 max-w-md mx-auto">
+          {{ error }}
+        </div>
+        
+        <div class="bg-white rounded-2xl shadow-xl p-8 mb-8 max-w-md mx-auto">
           <h2 class="text-2xl font-bold mb-4">游戏规则</h2>
           <div class="text-left space-y-3 text-gray-700">
             <div class="flex items-start gap-3">
@@ -178,7 +198,7 @@ onUnmounted(() => {
             </div>
             <div class="flex items-start gap-3">
               <span class="text-2xl">3️⃣</span>
-              <span>分数高者获胜，可获得丰厚奖励！</span>
+              <span>分数高者获胜</span>
             </div>
           </div>
         </div>
@@ -214,14 +234,11 @@ onUnmounted(() => {
           
           <!-- 对手信息 -->
           <div class="text-center">
-            <div class="text-4xl mb-2">{{ opponent?.avatar || '👤' }}</div>
-            <div class="font-bold">{{ opponent?.username || '对手' }}</div>
+            <div class="text-4xl mb-2">{{ opponent?.avatar || '🤖' }}</div>
+            <div class="font-bold">{{ opponent?.username || 'AI 对手' }}</div>
             <div class="text-2xl font-bold text-red-600">{{ opponentScore }}</div>
           </div>
         </div>
-        
-        <!-- 连击显示 -->
-        <ComboDisplay :combo="0" :max-combo="0" />
         
         <!-- 回合和倒计时 -->
         <div class="flex justify-between items-center bg-white rounded-xl p-4 shadow">
@@ -268,7 +285,7 @@ onUnmounted(() => {
           
           <!-- 反馈 -->
           <div v-if="feedback === 'correct'" class="mt-4 text-center text-green-600 text-xl font-bold">
-            ✅ 正确！
+            ✅ 正确！+100 分
           </div>
           <div v-else-if="feedback === 'incorrect'" class="mt-4 text-center text-red-600 text-xl font-bold">
             ❌ 错误！正确答案：{{ currentSentence }}
@@ -292,20 +309,11 @@ onUnmounted(() => {
             </div>
             <div class="text-4xl font-bold text-gray-400">VS</div>
             <div class="text-center">
-              <div class="text-4xl mb-2">{{ opponent?.avatar || '👤' }}</div>
+              <div class="text-4xl mb-2">{{ opponent?.avatar || '🤖' }}</div>
               <div class="text-5xl font-bold text-red-600">{{ opponentScore }}</div>
-              <div class="text-gray-600">{{ opponent?.username || '对手' }}</div>
+              <div class="text-gray-600">{{ opponent?.username || 'AI 对手' }}</div>
             </div>
           </div>
-          
-          <!-- 评级动画 -->
-          <RatingAnimation 
-            v-if="playerScore > opponentScore"
-            :accuracy="100"
-            :avg-time="5"
-            :combo="5"
-            show-medal
-          />
           
           <!-- 按钮 -->
           <div class="flex gap-4 justify-center mt-8">

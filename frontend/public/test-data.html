@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据测试页面</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        h1 { color: #333; }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 20px 0; }
+        .stat-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 8px; text-align: center; }
+        .stat-card h3 { margin: 0 0 10px 0; font-size: 14px; opacity: 0.9; }
+        .stat-card .number { font-size: 36px; font-weight: bold; }
+        .course-list { margin-top: 20px; }
+        .course-item { background: #f9f9f9; padding: 15px; margin: 10px 0; border-radius: 6px; border-left: 4px solid #667eea; }
+        .course-item h4 { margin: 0 0 8px 0; color: #333; }
+        .course-item p { margin: 5px 0; color: #666; font-size: 14px; }
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+        .badge.beginner { background: #d4edda; color: #155724; }
+        .badge.intermediate { background: #fff3cd; color: #856404; }
+        .badge.advanced { background: #f8d7da; color: #721c24; }
+        .loading { text-align: center; padding: 40px; color: #666; }
+        .error { background: #f8d7da; color: #721c24; padding: 15px; border-radius: 6px; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 数据库实时数据展示</h1>
+        <div id="loading" class="loading">正在加载数据...</div>
+        <div id="error" class="error" style="display:none;"></div>
+        
+        <div id="stats" class="stats" style="display:none;">
+            <div class="stat-card">
+                <h3>总课程数</h3>
+                <div class="number" id="courseCount">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>总句子数</h3>
+                <div class="number" id="sentenceCount">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>总词汇数</h3>
+                <div class="number" id="vocabCount">0</div>
+            </div>
+        </div>
+        
+        <div id="courseList" class="course-list" style="display:none;">
+            <h2>📚 课程列表（前 20 门）</h2>
+            <div id="courses"></div>
+        </div>
+    </div>
+
+    <script>
+        async function loadData() {
+            try {
+                // 获取统计数据
+                const statsRes = await fetch('/api/statistics/overview');
+                const stats = await statsRes.json();
+                
+                if (stats.success) {
+                    document.getElementById('courseCount').textContent = stats.data.totalCourses;
+                    document.getElementById('sentenceCount').textContent = stats.data.totalSentences;
+                    document.getElementById('vocabCount').textContent = stats.data.totalVocabulary;
+                    document.getElementById('stats').style.display = 'grid';
+                }
+                
+                // 获取课程列表
+                const coursesRes = await fetch('/api/courses');
+                const coursesData = await coursesRes.json();
+                
+                if (coursesData.success) {
+                    const courses = coursesData.data;
+                    const coursesDiv = document.getElementById('courses');
+                    
+                    courses.slice(0, 20).forEach(course => {
+                        const div = document.createElement('div');
+                        div.className = 'course-item';
+                        div.innerHTML = `
+                            <h4>${course.title} 
+                                <span class="badge ${course.difficulty_level}">${course.difficulty_level}</span>
+                            </h4>
+                            <p>ID: ${course.id} | 类型：${course.course_type} | 作者：${course.author_name}</p>
+                            <p>${course.description}</p>
+                        `;
+                        coursesDiv.appendChild(div);
+                    });
+                    
+                    document.getElementById('courseList').style.display = 'block';
+                }
+                
+                document.getElementById('loading').style.display = 'none';
+                
+            } catch (error) {
+                document.getElementById('loading').style.display = 'none';
+                const errorDiv = document.getElementById('error');
+                errorDiv.textContent = '加载数据失败：' + error.message;
+                errorDiv.style.display = 'block';
+            }
+        }
+        
+        loadData();
+    </script>
+</body>
+</html>

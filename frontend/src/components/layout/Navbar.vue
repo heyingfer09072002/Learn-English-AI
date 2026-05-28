@@ -6,8 +6,10 @@ const router = useRouter();
 const menuItems = [
   { path: '/courses', label: '课程广场', icon: '📚' },
   { path: '/practice', label: '练习', icon: '✏️' },
-  { path: '/pk-arena', label: 'PK 对战', icon: '⚔️' },
-  { path: '/statistics', label: '统计', icon: '📊' },
+  { path: '/daily-tasks', label: '每日任务', icon: '📅' },
+  { path: '/favorites', label: '错题本', icon: '⭐' },
+  { path: '/achievements', label: '成就', icon: '🏆' },
+  { path: '/my-progress', label: '统计', icon: '📊' },
   { path: '/profile', label: '我的', icon: '👤' },
 ];
 </script>

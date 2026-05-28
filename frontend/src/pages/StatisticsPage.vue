@@ -1,226 +1,218 @@
-<script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
-
-interface Overview {
-  totalStudyTime: number;
-  totalPractices: number;
-  currentStreak: number;
-  bestStreak: number;
-  masteredWords: number;
-  averageAccuracy: number;
-}
-
-interface HeatmapData {
-  date: string;
-  count: number;
-  duration: number;
-}
-
-interface RadarData {
-  listening: number;
-  speaking: number;
-  reading: number;
-  writing: number;
-  vocabulary: number;
-}
-
-const overview = ref<Overview | null>(null);
-const heatmapData = ref<HeatmapData[]>([]);
-const radarData = ref<RadarData | null>(null);
-const isLoading = ref(false);
-
-// 格式化学习时长
-function formatStudyTime(minutes: number): string {
-  if (minutes < 60) return `${minutes}分钟`;
-  const hours = Math.floor(minutes / 60);
-  const mins = minutes % 60;
-  return `${hours}小时${mins}分钟`;
-}
-
-// 获取热力图颜色
-function getHeatmapColor(count: number): string {
-  if (count === 0) return 'bg-gray-200';
-  if (count < 5) return 'bg-green-200';
-  if (count < 10) return 'bg-green-400';
-  if (count < 20) return 'bg-green-600';
-  return 'bg-green-800';
-}
-
-// 雷达图配置
-const radarConfig = {
-  width: 300,
-  height: 300,
-  center: 150,
-  radius: 100,
-  metrics: [
-    { key: 'listening', label: '听力' },
-    { key: 'speaking', label: '口语' },
-    { key: 'reading', label: '阅读' },
-    { key: 'writing', label: '写作' },
-    { key: 'vocabulary', label: '词汇' },
-  ],
-};
-
-// 计算雷达图坐标
-function getRadarPoint(value: number, index: number) {
-  const total = radarConfig.metrics.length;
-  const angle = (Math.PI * 2 * index) / total - Math.PI / 2;
-  const normalizedValue = value / 100;
-  const x = radarConfig.center + radarConfig.radius * normalizedValue * Math.cos(angle);
-  const y = radarConfig.center + radarConfig.radius * normalizedValue * Math.sin(angle);
-  return { x, y };
-}
-
-async function loadStatistics() {
-  isLoading.value = true;
-  try {
-    const [overviewRes, heatmapRes, radarRes] = await Promise.all([
-      fetch('/api/statistics/overview').then(r => r.json()),
-      fetch('/api/statistics/heatmap').then(r => r.json()),
-      fetch('/api/statistics/radar').then(r => r.json()),
-    ]);
-
-    if (overviewRes.success) overview.value = overviewRes.data;
-    if (heatmapRes.success) heatmapData.value = heatmapRes.data;
-    if (radarRes.success) radarData.value = radarRes.data;
-  } catch (error) {
-    console.error('加载统计失败:', error);
-  } finally {
-    isLoading.value = false;
-  }
-}
-
-onMounted(() => {
-  loadStatistics();
-});
-</script>
-
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 p-8">
-    <div class="max-w-6xl mx-auto">
-      <!-- 标题 -->
-      <h1 class="text-4xl font-bold text-gray-800 mb-8">学习统计</h1>
+  <div class="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-8">
+    <div class="max-w-7xl mx-auto">
+      <h1 class="text-3xl font-bold text-gray-800 mb-2">学习统计</h1>
+      <p class="text-gray-600 mb-8">用数据见证你的成长</p>
 
+      <!-- 加载状态 -->
       <div v-if="isLoading" class="text-center py-20">
         <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+        <p class="text-gray-600 mt-4">加载统计数据...</p>
       </div>
 
-      <div v-else class="space-y-8">
-        <!-- 概览卡片 -->
-        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          <div class="bg-white rounded-xl shadow-lg p-4">
-            <div class="text-3xl font-bold text-blue-500">{{ overview?.totalStudyTime || 0 }}</div>
-            <div class="text-sm text-gray-600">总学习时长 (分钟)</div>
+      <template v-else>
+        <!-- 等级卡片 -->
+        <LevelCard
+          :level-info="levelInfo"
+          :achievements-unlocked="achievementsUnlocked"
+          class="mb-8"
+        />
+
+        <!-- 总览卡片 -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+          <div class="bg-white rounded-xl shadow-lg p-6">
+            <div class="text-sm text-gray-600 mb-1">已学课程</div>
+            <div class="text-3xl font-bold text-blue-600">{{ overview.coursesLearned }}</div>
           </div>
-          <div class="bg-white rounded-xl shadow-lg p-4">
-            <div class="text-3xl font-bold text-green-500">{{ overview?.totalPractices || 0 }}</div>
-            <div class="text-sm text-gray-600">总练习次数</div>
+          <div class="bg-white rounded-xl shadow-lg p-6">
+            <div class="text-sm text-gray-600 mb-1">已学句子</div>
+            <div class="text-3xl font-bold text-green-600">{{ overview.sentencesLearned }}</div>
           </div>
-          <div class="bg-white rounded-xl shadow-lg p-4">
-            <div class="text-3xl font-bold text-orange-500">{{ overview?.currentStreak || 0 }}</div>
-            <div class="text-sm text-gray-600">当前连续天数</div>
+          <div class="bg-white rounded-xl shadow-lg p-6">
+            <div class="text-sm text-gray-600 mb-1">已掌握</div>
+            <div class="text-3xl font-bold text-purple-600">{{ overview.sentencesMastered }}</div>
           </div>
-          <div class="bg-white rounded-xl shadow-lg p-4">
-            <div class="text-3xl font-bold text-purple-500">{{ overview?.bestStreak || 0 }}</div>
-            <div class="text-sm text-gray-600">最佳连续天数</div>
-          </div>
-          <div class="bg-white rounded-xl shadow-lg p-4">
-            <div class="text-3xl font-bold text-red-500">{{ overview?.masteredWords || 0 }}</div>
-            <div class="text-sm text-gray-600">已掌握单词</div>
-          </div>
-          <div class="bg-white rounded-xl shadow-lg p-4">
-            <div class="text-3xl font-bold text-cyan-500">{{ (overview?.averageAccuracy * 100).toFixed(1) }}%</div>
-            <div class="text-sm text-gray-600">平均准确率</div>
+          <div class="bg-white rounded-xl shadow-lg p-6">
+            <div class="text-sm text-gray-600 mb-1">平均准确率</div>
+            <div class="text-3xl font-bold text-orange-600">{{ overview.avgAccuracy }}%</div>
           </div>
         </div>
 
-        <!-- 雷达图和热力图 -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <!-- 能力雷达图 -->
+        <!-- 学习时长和打卡 -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div class="bg-white rounded-xl shadow-lg p-6">
-            <h2 class="text-2xl font-bold mb-6">能力分布</h2>
-            <div class="flex justify-center">
-              <svg :width="radarConfig.width" :height="radarConfig.height">
-                <!-- 背景网格 -->
-                <polygon
-                  v-for="i in 5"
-                  :key="i"
-                  :points="radarConfig.metrics.map((_, j) => {
-                    const point = getRadarPoint(20 * i, j);
-                    return `${point.x},${point.y}`;
-                  }).join(' ')"
-                  fill="none"
-                  stroke="#e5e7eb"
-                  :stroke-width="1"
-                />
-                
-                <!-- 数据线 -->
-                <polygon
-                  v-if="radarData"
-                  :points="radarConfig.metrics.map((metric, i) => {
-                    const point = getRadarPoint(radarData[metric.key as keyof RadarData] || 0, i);
-                    return `${point.x},${point.y}`;
-                  }).join(' ')"
-                  fill="rgba(59, 130, 246, 0.2)"
-                  stroke="#3b82f6"
-                  :stroke-width="2"
-                />
-                
-                <!-- 数据点 -->
-                <circle
-                  v-for="(metric, i) in radarConfig.metrics"
-                  :key="metric.key"
-                  :cx="getRadarPoint(radarData?.[metric.key as keyof RadarData] || 0, i).x"
-                  :cy="getRadarPoint(radarData?.[metric.key as keyof RadarData] || 0, i).y"
-                  r="4"
-                  fill="#3b82f6"
-                />
-                
-                <!-- 标签 -->
-                <text
-                  v-for="(metric, i) in radarConfig.metrics"
-                  :key="metric.key"
-                  :x="getRadarPoint(120, i).x"
-                  :y="getRadarPoint(120, i).y"
-                  text-anchor="middle"
-                  dominant-baseline="middle"
-                  class="text-xs fill-gray-600"
-                >
-                  {{ metric.label }}
-                </text>
-              </svg>
+            <div class="flex items-center gap-3 mb-2">
+              <span class="text-3xl">⏱️</span>
+              <div>
+                <div class="text-sm text-gray-600">总学习时长</div>
+                <div class="text-2xl font-bold text-gray-800">
+                  {{ overview.learningTime.hours }}小时{{ overview.learningTime.minutes }}分钟
+                </div>
+              </div>
             </div>
           </div>
-
-          <!-- 学习热力图 -->
           <div class="bg-white rounded-xl shadow-lg p-6">
-            <h2 class="text-2xl font-bold mb-6">学习热力图 (最近 90 天)</h2>
-            <div class="grid grid-cols-13 gap-1">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="text-3xl">🔥</span>
+              <div>
+                <div class="text-sm text-gray-600">最大连续打卡</div>
+                <div class="text-2xl font-bold text-gray-800">{{ overview.maxStreak }}天</div>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white rounded-xl shadow-lg p-6">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="text-3xl">⭐</span>
+              <div>
+                <div class="text-sm text-gray-600">总打卡天数</div>
+                <div class="text-2xl font-bold text-gray-800">{{ overview.checkinDays }}天</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 学习趋势图 -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+          <h2 class="text-xl font-bold text-gray-800 mb-4">📈 学习趋势（近 30 天）</h2>
+          <div class="h-64 flex items-end gap-2">
+            <div
+              v-for="(day, idx) in trendData"
+              :key="idx"
+              class="flex-1 flex flex-col items-center"
+            >
               <div
-                v-for="day in heatmapData"
-                :key="day.date"
-                :class="['w-4 h-4 rounded', getHeatmapColor(day.count)]"
-                :title="`${day.date}: ${day.count} 次练习，${day.duration} 分钟`"
-              />
-            </div>
-            <div class="flex items-center gap-2 mt-4 text-xs text-gray-600">
-              <span>少</span>
-              <div class="w-3 h-3 rounded bg-gray-200"></div>
-              <div class="w-3 h-3 rounded bg-green-200"></div>
-              <div class="w-3 h-3 rounded bg-green-400"></div>
-              <div class="w-3 h-3 rounded bg-green-600"></div>
-              <div class="w-3 h-3 rounded bg-green-800"></div>
-              <span>多</span>
+                class="w-full bg-blue-500 rounded-t transition-all"
+                :style="{ height: `${(day.count / maxCount) * 100}%`, minHeight: '4px' }"
+              ></div>
+              <div class="text-xs text-gray-500 mt-2">{{ day.date.slice(5) }}</div>
             </div>
           </div>
         </div>
-      </div>
+
+        <!-- 课程进度 -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+          <h2 class="text-xl font-bold text-gray-800 mb-4">📚 课程进度</h2>
+          <div class="space-y-4">
+            <div
+              v-for="course in courseData"
+              :key="course.courseId"
+              class="flex items-center gap-4"
+            >
+              <div class="w-32 text-sm font-bold text-gray-700 truncate">{{ course.title }}</div>
+              <div class="flex-1 h-4 bg-gray-200 rounded-full overflow-hidden">
+                <div
+                  class="h-full bg-gradient-to-r from-blue-500 to-purple-500"
+                  :style="{ width: `${course.progress}%` }"
+                ></div>
+              </div>
+              <div class="text-sm text-gray-600 w-20">{{ course.progress }}%</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 难度分布 -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+          <h2 class="text-xl font-bold text-gray-800 mb-4">🎯 难度分布</h2>
+          <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+            <div
+              v-for="item in difficultyData"
+              :key="item.difficulty"
+              class="text-center p-4 rounded-lg bg-gray-50"
+            >
+              <div class="text-2xl mb-2">{{ getDifficultyIcon(item.difficulty) }}</div>
+              <div class="text-sm text-gray-600 mb-1">{{ formatDifficulty(item.difficulty) }}</div>
+              <div class="text-xl font-bold text-gray-800">{{ item.count }}句</div>
+              <div class="text-xs text-green-600">掌握{{ item.percent }}%</div>
+            </div>
+          </div>
+        </div>
+      </template>
     </div>
   </div>
 </template>
 
-<style scoped>
-.grid-cols-13 {
-  grid-template-columns: repeat(13, 1fr);
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue'
+import { apiGet } from '../api/apiClient'
+import LevelCard from '../components/LevelCard.vue'
+
+const isLoading = ref(true)
+const levelInfo = ref<any>({
+  level: 1,
+  title: '英语新手',
+  experience: 0,
+  icon: '👶',
+  percent: 0,
+  expNeeded: 0,
+  expToNextLevel: 0,
+  nextLevel: null,
+})
+const achievementsUnlocked = ref(0)
+const overview = ref<any>({
+  coursesLearned: 0,
+  sentencesLearned: 0,
+  sentencesMastered: 0,
+  avgAccuracy: 0,
+  learningTime: { hours: 0, minutes: 0 },
+  maxStreak: 0,
+  checkinDays: 0,
+})
+const trendData = ref<any[]>([])
+const courseData = ref<any[]>([])
+const difficultyData = ref<any[]>([])
+
+const maxCount = computed(() => {
+  return Math.max(...trendData.value.map(d => d.count), 1)
+})
+
+function formatDifficulty(diff: string) {
+  const map: Record<string, string> = {
+    beginner: '入门',
+    elementary: '基础',
+    intermediate: '中级',
+    upperIntermediate: '中高级',
+    advanced: '高级',
+  }
+  return map[diff] || diff
 }
-</style>
+
+function getDifficultyIcon(diff: string) {
+  const icons: Record<string, string> = {
+    beginner: '👶',
+    elementary: '📖',
+    intermediate: '📚',
+    upperIntermediate: '🎓',
+    advanced: '🏆',
+  }
+  return icons[diff] || '📌'
+}
+
+async function loadStatistics() {
+  try {
+    const [levelRes, overviewRes, trendRes, courseRes, difficultyRes] = await Promise.all([
+      apiGet('/api/achievements/level'),
+      apiGet('/api/statistics/overview'),
+      apiGet('/api/statistics/trend?days=30'),
+      apiGet('/api/statistics/courses'),
+      apiGet('/api/statistics/difficulty'),
+    ])
+
+    if (levelRes.success) {
+      levelInfo.value = levelRes.data
+      achievementsUnlocked.value = levelRes.data.newAchievements?.length || 0
+    }
+    if (overviewRes.success) overview.value = overviewRes.data
+    if (trendRes.success) trendData.value = trendRes.data.slice(-15)
+    if (courseRes.success) courseData.value = courseRes.data.slice(0, 5)
+    if (difficultyRes.success) difficultyData.value = difficultyRes.data
+  } catch (error) {
+    console.error('加载统计失败:', error)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+onMounted(() => {
+  loadStatistics()
+})
+</script>
