@@ -1,0 +1,42 @@
+/* 全局输入框样式修复 - 解决白底白字问题 */
+
+/* 所有 input 元素 */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="tel"],
+input[type="url"],
+input[type="search"] {
+  color: rgb(55 65 81) !important; /* gray-700 */
+}
+
+input[type="text"]::placeholder,
+input[type="email"]::placeholder,
+input[type="password"]::placeholder,
+input[type="number"]::placeholder,
+input[type="tel"]::placeholder,
+input[type="url"]::placeholder,
+input[type="search"]::placeholder {
+  color: rgb(156 163 175) !important; /* gray-400 */
+}
+
+/* 所有 textarea 元素 */
+textarea {
+  color: rgb(55 65 81) !important; /* gray-700 */
+}
+
+textarea::placeholder {
+  color: rgb(156 163 175) !important; /* gray-400 */
+}
+
+/* 所有 select 元素 */
+select {
+  color: rgb(55 65 81) !important; /* gray-700 */
+}
+
+/* select option 强制深色 */
+select option {
+  color: rgb(17 24 39); /* gray-900 */
+  background-color: white;
+}

@@ -132,7 +132,7 @@ async function createCourse() {
               v-model="formData.title"
               type="text"
               placeholder="例如：CET-6 高频词汇"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-700 placeholder-gray-400"
             />
           </div>
           
@@ -143,7 +143,7 @@ async function createCourse() {
               v-model="formData.description"
               rows="3"
               placeholder="简要描述课程内容..."
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-700 placeholder-gray-400"
             ></textarea>
           </div>
           
@@ -154,7 +154,7 @@ async function createCourse() {
               v-model="formData.targetAudience"
               type="text"
               placeholder="例如：大学生、职场人士、考研党"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-700 placeholder-gray-400"
             />
           </div>
           
@@ -165,7 +165,7 @@ async function createCourse() {
               v-model="formData.tags"
               type="text"
               placeholder="例如：CET-6, 词汇，高频"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-700 placeholder-gray-400"
             />
           </div>
         </div>
@@ -227,7 +227,7 @@ async function createCourse() {
             @input="previewSentencesFromContent"
             rows="10"
             placeholder="输入英文句子，每句一行。AI 将自动分句并生成知识点..."
-            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono text-gray-700 placeholder-gray-400"
           ></textarea>
           <div class="text-sm text-gray-500 mt-2">
             当前句子数：{{ previewSentences.length }}

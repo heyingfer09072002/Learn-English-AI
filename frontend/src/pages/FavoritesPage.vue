@@ -43,7 +43,7 @@
         <div class="flex items-center gap-4">
           <select
             v-model="selectedCourse"
-            class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-gray-700 bg-white"
             @change="loadFavorites"
           >
             <option value="">全部课程</option>

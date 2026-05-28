@@ -32,7 +32,7 @@
           <h2 class="text-3xl font-bold">选择词汇组</h2>
           <select 
             v-model="selectedCategory"
-            class="px-6 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-blue-500/50"
+            class="px-6 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-blue-500/50 text-gray-700"
           >
             <option value="all">全部分类</option>
             <option value="frequency">按词频</option>

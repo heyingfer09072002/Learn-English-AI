@@ -33,6 +33,8 @@ export const getProfile = async (req: AuthRequest, res: Response) => {
         lastLoginAt: user.lastLoginAt,
         totalLearnTime: user.totalLearnTime,
         streakDays: user.streakDays,
+        goldCoins: user.gold_coins || 0,
+        diamondCoins: user.diamond_coins || 0,
       }
     });
   } catch (error) {

@@ -268,7 +268,7 @@ function onGameStart() {
             :disabled="!!feedback"
             rows="3"
             placeholder="输入你听到的句子..."
-            class="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-lg"
+            class="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-lg text-gray-700 placeholder-gray-400"
             :class="feedback === 'correct' ? 'border-green-500 bg-green-50' : 
                     feedback === 'incorrect' ? 'border-red-500 bg-red-50' : 'border-gray-300'"
             @keyup.enter="submitAnswer"

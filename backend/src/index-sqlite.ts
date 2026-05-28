@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import julebuRoutes from './routes/julebu-sqlite.js';
-import authRoutes from './routes/auth.js';
+import routes from './routes/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -21,16 +21,17 @@ const io = new Server(server, {
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '../../frontend/dist')));
 
-// API 路由
-app.use('/api', julebuRoutes);
-app.use('/api', authRoutes); // 认证和 VIP 路由
-
-// 健康检查
+// 健康检查（要在路由之前）
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', mode: 'sqlite' });
 });
+
+// API 路由（要在静态文件之前）
+app.use('/api', routes);
+
+// 静态文件服务（生产环境）
+app.use(express.static(path.join(__dirname, '../../frontend/dist')));
 
 // Socket.IO 事件
 io.on('connection', (socket) => {
@@ -41,7 +42,7 @@ io.on('connection', (socket) => {
   });
 });
 
-// 前端路由
+// 前端路由（SPA fallback）
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../../frontend/dist/index.html'));
 });
@@ -57,5 +58,3 @@ server.listen(PORT, () => {
 ╚════════════════════════════════════════════════╝
   `);
 });
-
-export { io };
